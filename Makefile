@@ -33,3 +33,6 @@ $(TARGET_DIR)/%.o: $(SRC_DIR)/%.cpp
 # Clean up compiled files
 clean:
 	rm -f $(OBJS) $(TARGET)
+
+# Clean first and build afterwards
+rebuild: clean $(TARGET)

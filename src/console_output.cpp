@@ -1,32 +1,25 @@
+#include <chrono>
 #include <iostream>
 #include <thread>
-#include <chrono>
 
 #include "console_output.h"
 
-
 bool flip = true;
 
-void draw_field()
-{
+void draw_field() {
     // 2J = clear screen; 1;1H = move cursor to row 1, column 1
     std::cout << "\033[2J\033[1;1H";
 
     // draw the game field border
-    for (int y = 0; y < FIELD_DIM_Y; y++)
-    {
-        for (int x = 0; x < FIELD_DIM_X; x++)
-        {
-            if (y == 0 || x == 0 || x == FIELD_DIM_X - 1 || y == FIELD_DIM_Y - 1)
-            {
+    for (int y = 0; y < FIELD_DIM_Y; y++) {
+        for (int x = 0; x < FIELD_DIM_X; x++) {
+            if (y == 0 || x == 0 || x == FIELD_DIM_X - 1 ||
+                y == FIELD_DIM_Y - 1) {
                 std::cout << (flip ? "#" : "+");
-            }
-            else
-            {
+            } else {
                 std::cout << " ";
             }
-            if (x == FIELD_DIM_X - 1)
-            {
+            if (x == FIELD_DIM_X - 1) {
                 std::cout << std::endl;
             }
         }
@@ -36,10 +29,10 @@ void draw_field()
     flip = !flip;
 }
 
-void console_playground()
-{
+void console_playground() {
     // Clear the screen
-    std::cout << "\033[2J\033[1;1H"; // Clear the screen and move cursor to (1,1)
+    std::cout
+        << "\033[2J\033[1;1H"; // Clear the screen and move cursor to (1,1)
 
     // Print some text
     std::cout << "Hello, World!" << std::endl;
@@ -53,7 +46,8 @@ void console_playground()
     std::cout << "Moved up!" << std::endl;
 
     // Move the cursor down by one line
-    std::cout << "\033[B\033[0G"; // Move cursor down "B" and to the start of the line "0G"
+    std::cout << "\033[B\033[0G"; // Move cursor down "B" and to the start of
+                                  // the line "0G"
     std::cout << "Moved down!" << std::endl;
 
     // Move the cursor back to the beginning
