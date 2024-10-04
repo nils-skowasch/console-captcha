@@ -1,9 +1,5 @@
-#include <iostream>
-#include <unistd.h>
-#include <thread>
-#include <chrono>
 #include "user_input.cpp"
-#include "console.cpp"
+#include "console_output.cpp"
 
 #define REFRESH_RATE_HZ 2
 

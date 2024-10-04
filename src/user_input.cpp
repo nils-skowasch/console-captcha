@@ -1,13 +1,13 @@
-#include <iostream>
 #include <thread>
 #include <unistd.h>
 #include <atomic>
 
-std::thread input_thread;
-std::atomic<bool> continue_execution(true);
-std::atomic<char> buffer(0);
 
-void readFromStdin()
+std::atomic<bool> continue_execution(true);
+static std::atomic<char> buffer(0);
+static std::thread input_thread;
+
+static void readFromStdin()
 {
     // continue, until user quits with 'q'
     while (continue_execution)

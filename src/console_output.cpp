@@ -2,8 +2,8 @@
 #include <thread>
 #include <chrono>
 
-#define FIELD_DIM_X 24
-#define FIELD_DIM_Y 8
+#include "console_output.h"
+
 
 bool flip = true;
 
