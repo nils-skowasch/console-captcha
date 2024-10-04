@@ -2,30 +2,29 @@
 #include <unistd.h>
 #include <thread>
 #include <chrono>
+#include "user_input.cpp"
 #include "console.cpp"
 
 #define REFRESH_RATE_HZ 2
 
 int main()
 {
-    bool run = true;
-    char key;
-    while (run)
+    // start another thread to fetch user's keyboard input
+    start_user_input_thread();
+
+    // continue, until user quits
+    while (continue_execution)
     {
         // draw the field
         draw_field();
-
-        // fetch user input
-        if (read(STDIN_FILENO, &key, 1) > 0) // unfortunately blocking
-        {
-            if (key == 'q')
-            {
-                run = false;
-            }
-        }
+        //console_playground();
 
         // sleep a bit
         std::this_thread::sleep_for(std::chrono::milliseconds(1000 / REFRESH_RATE_HZ));
     }
+
+    // wait for the input_thread to finish
+    input_thread.join();
+
     return 0;
 }
