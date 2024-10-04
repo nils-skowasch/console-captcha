@@ -16,6 +16,7 @@ class UserInput {
 
   public:
     UserInput();
+    ~UserInput();
     void startThread(Meta *m);
     void joinThread();
     bool isContinueExceution();

@@ -1,11 +1,50 @@
 #include "user_input.h"
 #include "meta.h"
 #include <atomic>
+#include <termios.h>
 #include <thread>
 #include <unistd.h>
 
+/**
+ * Disable canonical mode to receive every key pressed event directly.
+ */
+static void disableCanonicalMode() {
+    // disable terminal canonical mode
+    struct termios term;
+
+    // get current terminal attributes
+    tcgetattr(STDIN_FILENO, &term);
+
+    // disable canonical mode and echo
+    term.c_lflag &= ~(ICANON | ECHO);
+
+    // set the new terminal attributes
+    tcsetattr(STDIN_FILENO, TCSANOW, &term);
+}
+
+/**
+ * Enable the canonical mode to leave the terminal in a usable way.
+ */
+static void enableCanonicalMode() {
+    struct termios term;
+
+    // Get current terminal attributes
+    tcgetattr(STDIN_FILENO, &term);
+
+    // Restore canonical mode and echo
+    term.c_lflag |= (ICANON | ECHO);
+
+    // Set the restored terminal attributes
+    tcsetattr(STDIN_FILENO, TCSANOW, &term);
+}
+
 UserInput::UserInput()
     : continue_execution(true), buffer(0), inputThread(nullptr), meta(nullptr) {
+    disableCanonicalMode();
+}
+
+UserInput::~UserInput() {
+    enableCanonicalMode();
 }
 
 void UserInput::readFromStdin() {
