@@ -3,10 +3,11 @@
 #include <thread>
 
 #include "console_output.h"
+#include "meta.h"
 
-bool flip = true;
+static bool flip = true;
 
-void draw_field() {
+void drawField(Meta *meta) {
     // 2J = clear screen; 1;1H = move cursor to row 1, column 1
     std::cout << "\033[2J\033[1;1H";
 

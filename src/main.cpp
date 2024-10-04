@@ -15,8 +15,7 @@ int main() {
     // continue, until user quits
     while (userInput.isContinueExceution()) {
         // draw the field
-        draw_field();
-        // console_playground();
+        drawField(&meta);
 
         // sleep a bit
         std::this_thread::sleep_for(
