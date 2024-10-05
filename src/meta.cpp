@@ -1,28 +1,37 @@
 #include "meta.h"
 #include "console_output.h"
 
-Meta::Meta() {}
+Meta::Meta() {
+}
 
-void Meta::move_cursor_up() {
-    if (cursor_y > 1) {
-        cursor_y--;
+void Meta::moveCursorUp() {
+    if (cursorY > 1) {
+        cursorY--;
     }
 }
 
-void Meta::move_cursor_down() {
-    if (cursor_y < FIELD_DIM_Y - 1) {
-        cursor_y++;
+void Meta::moveCursorDown() {
+    if (cursorY < FIELD_DIM_Y - 1) {
+        cursorY++;
     }
 }
 
-void Meta::move_cursor_left() {
-    if (cursor_x > 1) {
-        cursor_x--;
+void Meta::moveCursorLeft() {
+    if (cursorX > 1) {
+        cursorX--;
     }
 }
 
-void Meta::move_cursor_right() {
-    if (cursor_x < FIELD_DIM_X - 1) {
-        cursor_x++;
+void Meta::moveCursorRight() {
+    if (cursorX < FIELD_DIM_X - 1) {
+        cursorX++;
     }
+}
+
+int Meta::getCursorX() {
+    return cursorX;
+}
+
+int Meta::getCursorY() {
+    return cursorY;
 }

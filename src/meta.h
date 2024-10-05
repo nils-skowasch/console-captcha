@@ -3,15 +3,17 @@
 
 class Meta {
   private:
-    int cursor_x = 0;
-    int cursor_y = 0;
+    int cursorX = 5;
+    int cursorY = 5;
 
   public:
     Meta();
-    void move_cursor_up();
-    void move_cursor_down();
-    void move_cursor_left();
-    void move_cursor_right();
+    void moveCursorUp();
+    void moveCursorDown();
+    void moveCursorLeft();
+    void moveCursorRight();
+    int getCursorX();
+    int getCursorY();
 };
 
 #endif

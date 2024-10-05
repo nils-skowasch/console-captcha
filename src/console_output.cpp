@@ -7,15 +7,29 @@
 
 static bool flip = true;
 
-void drawField(Meta *meta) {
-    // 2J = clear screen; 1;1H = move cursor to row 1, column 1
-    std::cout << "\033[2J\033[1;1H";
+static void moveCursor(int x, int y) {
+    std::cout << "\033[" << (y + 1) << ";" << (x + 1) << "H";
+}
 
+static void hideCursor() {
+    std::cout << "\033[?25l]";
+}
+
+static void showCursor() {
+    std::cout << "\033[?25h";
+}
+
+static void clearConsole() {
+    // 2J = clear screen; 1;1H = move cursor to row 1, column 1
+    std::cout << "\033[2J";
+    moveCursor(0, 0);
+}
+
+static void drawBorder() {
     // draw the game field border
     for (int y = 0; y < FIELD_DIM_Y; y++) {
         for (int x = 0; x < FIELD_DIM_X; x++) {
-            if (y == 0 || x == 0 || x == FIELD_DIM_X - 1 ||
-                y == FIELD_DIM_Y - 1) {
+            if (y == 0 || x == 0 || x == FIELD_DIM_X - 1 || y == FIELD_DIM_Y - 1) {
                 std::cout << (flip ? "#" : "+");
             } else {
                 std::cout << " ";
@@ -30,10 +44,26 @@ void drawField(Meta *meta) {
     flip = !flip;
 }
 
+static void drawCursor(Meta *meta) {
+    moveCursor(meta->getCursorX(), meta->getCursorY());
+    std::cout << "X" << std::flush;
+}
+
+void drawField(Meta *meta) {
+    hideCursor();
+    clearConsole();
+    drawBorder();
+    drawCursor(meta);
+}
+
+void resetConsole() {
+    clearConsole();
+    showCursor();
+}
+
 void console_playground() {
     // Clear the screen
-    std::cout
-        << "\033[2J\033[1;1H"; // Clear the screen and move cursor to (1,1)
+    std::cout << "\033[2J\033[1;1H"; // Clear the screen and move cursor to (1,1)
 
     // Print some text
     std::cout << "Hello, World!" << std::endl;

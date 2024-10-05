@@ -38,8 +38,7 @@ static void enableCanonicalMode() {
     tcsetattr(STDIN_FILENO, TCSANOW, &term);
 }
 
-UserInput::UserInput()
-    : continue_execution(true), buffer(0), inputThread(nullptr), meta(nullptr) {
+UserInput::UserInput() : continue_execution(true), buffer(0), inputThread(nullptr), meta(nullptr) {
     disableCanonicalMode();
 }
 
@@ -48,12 +47,28 @@ UserInput::~UserInput() {
 }
 
 void UserInput::readFromStdin() {
+    bool escape_mode = false; // used to switch into "ansi-escape-char-parsing-mode" ;)
+
     // continue, until user quits with 'q'
     while (continue_execution) {
         // fetch user input
         if (read(STDIN_FILENO, &buffer, 1) > 0) {
             if (buffer == 'q') {
                 continue_execution = false;
+            } else if (buffer == 27) { // ansi escape char
+                escape_mode = true;
+            } else if (escape_mode && buffer == 91) {
+                continue;                              // continue parsing the ansi escaped char
+            } else if (escape_mode && buffer == 'A') { // arrow up
+                meta->moveCursorUp();
+            } else if (escape_mode && buffer == 'B') { // arrow down
+                meta->moveCursorDown();
+            } else if (escape_mode && buffer == 'C') { // arrow right
+                meta->moveCursorRight();
+            } else if (escape_mode && buffer == 'D') { // arrow left
+                meta->moveCursorLeft();
+            } else {
+                escape_mode = false;
             }
         }
     }

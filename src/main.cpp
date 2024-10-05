@@ -2,7 +2,7 @@
 #include "meta.cpp"
 #include "user_input.cpp"
 
-#define REFRESH_RATE_HZ 2
+#define REFRESH_RATE_HZ 4
 
 int main() {
     // initialze Meta object, which serves as central data hub
@@ -24,6 +24,9 @@ int main() {
 
     // wait for the input_thread to finish
     userInput.joinThread();
+
+    // clear and reset console for shutdown
+    resetConsole();
 
     return 0;
 }
