@@ -27,4 +27,9 @@ enum class AnsiBackgroundColor {
     WHITE = 47
 };
 
+enum class AnsiRgbColorMode {
+    FOREGROUND = 38,
+    BACKGROUND = 48
+};
+
 #endif

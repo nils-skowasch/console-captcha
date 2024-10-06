@@ -18,7 +18,15 @@ void clearConsole() {
     moveCursor(0, 0);
 }
 
+void setStyle(AnsiStyle style){
+    std::cout << ANSI_ESCAPE << static_cast<int>(style) << "m";
+}
+
 void setColor(AnsiStyle style, AnsiForegroundColor fgColor, AnsiBackgroundColor bgColor) {
     std::cout << ANSI_ESCAPE << static_cast<int>(style) << ";" << static_cast<int>(fgColor) << ";"
               << static_cast<int>(bgColor) << "m";
+}
+
+void setColor(AnsiRgbColorMode mode, int red, int green, int blue) {
+    std::cout << ANSI_ESCAPE << static_cast<int>(mode) << ";2;" << red << ";" << green << ";" << blue << "m"; // ';2;' = 24bit rgb color mode
 }

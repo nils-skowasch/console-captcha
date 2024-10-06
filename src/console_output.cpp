@@ -2,22 +2,22 @@
 #include <iostream>
 #include <thread>
 
+#include "ansi_codes.cpp"
 #include "console_output.h"
 #include "meta.h"
-#include "ansi_codes.cpp"
 
 static bool flip = true;
-
-
 
 static void drawBorder() {
     // draw the game field border
     for (int y = 0; y < FIELD_DIM_Y; y++) {
         for (int x = 0; x < FIELD_DIM_X; x++) {
             if (y == 0 || x == 0 || x == FIELD_DIM_X - 1 || y == FIELD_DIM_Y - 1) {
-                setColor(AnsiStyle::BOLD, AnsiForegroundColor::MAGENTA, AnsiBackgroundColor::MAGENTA);
+                setStyle(AnsiStyle::BOLD);
+                setColor(AnsiRgbColorMode::BACKGROUND, 80, 80, 80);
+                setColor(AnsiRgbColorMode::FOREGROUND, 0, 0, 0);
                 std::cout << (flip ? "#" : "+");
-                setColor(AnsiStyle::RESET, AnsiForegroundColor::WHITE, AnsiBackgroundColor::BLACK);
+                setStyle(AnsiStyle::RESET);
             } else {
                 std::cout << " ";
             }
@@ -41,7 +41,7 @@ void drawField(Meta *meta) {
     clearConsole();
 
     drawBorder();
-        
+
     drawCursor(meta);
 }
 
