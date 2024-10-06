@@ -4,9 +4,11 @@
 void Meta::initGameField() {
     for (int y = 0; y < FIELD_DIM_Y - 2; y++) {
         for (int x = 0; x < FIELD_DIM_X - 2; x++) {
-            gameField[y][x] = '-';
+            gameField[y][x] = ' ';
         }
     }
+    gameField[3][0] = WIRE_CHAR;
+    gameField[1][FIELD_DIM_X - 3] = TERM_CHAR;
 }
 
 Meta::Meta() {
@@ -45,6 +47,10 @@ int Meta::getCursorY() {
     return cursorY;
 }
 
-char Meta::getGameFieldCharAt(int x, int y) {
+void Meta::placeWire() {
+    gameField[cursorY - 1][cursorX - 1] = WIRE_CHAR;
+}
+
+unsigned char Meta::getGameFieldCharAt(int x, int y) {
     return gameField[y][x];
 }

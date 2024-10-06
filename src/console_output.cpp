@@ -16,9 +16,9 @@ static void drawBorder() {
     for (int y = 0; y < FIELD_DIM_Y; y++) {
         for (int x = 0; x < FIELD_DIM_X; x++) {
             if (y == 0 || x == 0 || x == FIELD_DIM_X - 1 || y == FIELD_DIM_Y - 1) {
-                std::cout << (flip ? "#" : "+");
+                std::cout << '#';
             } else {
-                std::cout << " ";
+                std::cout << ' ';
             }
             if (x == FIELD_DIM_X - 1) {
                 std::cout << std::endl;
@@ -26,9 +26,6 @@ static void drawBorder() {
         }
     }
     setStyle(AnsiStyle::RESET);
-
-    // flip border character to visualize redraw events
-    flip = !flip;
 }
 
 static void drawCursor(Meta *meta) {
@@ -37,12 +34,22 @@ static void drawCursor(Meta *meta) {
 }
 
 static void drawGameField(Meta *meta) {
+    setColor(AnsiStyle::RESET, AnsiForegroundColor::WHITE, AnsiBackgroundColor::BLACK);
     for (int y = 0; y < FIELD_DIM_Y - 2; y++) {
         moveCursor(1, y + 1);
         for (int x = 0; x < FIELD_DIM_X - 2; x++) {
-            std::cout << meta->getGameFieldCharAt(x, y);
+            unsigned char c = meta->getGameFieldCharAt(x, y);
+            if (c == WIRE_CHAR || c == TERM_CHAR) {
+                setColor(AnsiStyle::BOLD, AnsiForegroundColor::BLUE, AnsiBackgroundColor::BLACK);
+                std::cout << c;
+                setColor(AnsiStyle::RESET, AnsiForegroundColor::WHITE, AnsiBackgroundColor::BLACK);
+            } else {
+                std::cout << c;
+            }
         }
     }
+    setStyle(AnsiStyle::RESET);
+    std::cout << std::flush; // flush output stream
 }
 
 void drawField(Meta *meta) {
@@ -52,7 +59,10 @@ void drawField(Meta *meta) {
     drawBorder();
     drawGameField(meta);
 
-    drawCursor(meta);
+    if (flip) {
+        drawCursor(meta);
+    }
+    flip = !flip; // flip border character to visualize redraw events
 }
 
 void resetConsole() {

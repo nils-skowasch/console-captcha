@@ -2,7 +2,7 @@
 #include "meta.cpp"
 #include "user_input.cpp"
 
-#define REFRESH_RATE_HZ 4
+#define REFRESH_RATE_HZ 8
 
 int main() {
     // initialze Meta object, which serves as central data hub

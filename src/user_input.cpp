@@ -55,6 +55,8 @@ void UserInput::readFromStdin() {
         if (read(STDIN_FILENO, &buffer, 1) > 0) {
             if (buffer == 'q') {
                 continue_execution = false;
+            } else if (buffer == ' ') {
+                meta->placeWire();
             } else if (buffer == 27) { // ansi escape char
                 escape_mode = true;
             } else if (escape_mode && buffer == 91) {
