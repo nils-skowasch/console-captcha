@@ -1,7 +1,16 @@
 #include "meta.h"
 #include "console_output.h"
 
+void Meta::initGameField() {
+    for (int y = 0; y < FIELD_DIM_Y - 2; y++) {
+        for (int x = 0; x < FIELD_DIM_X - 2; x++) {
+            gameField[y][x] = '-';
+        }
+    }
+}
+
 Meta::Meta() {
+    initGameField();
 }
 
 void Meta::moveCursorUp() {
@@ -11,7 +20,7 @@ void Meta::moveCursorUp() {
 }
 
 void Meta::moveCursorDown() {
-    if (cursorY < FIELD_DIM_Y - 1) {
+    if (cursorY < FIELD_DIM_Y - 2) {
         cursorY++;
     }
 }
@@ -23,7 +32,7 @@ void Meta::moveCursorLeft() {
 }
 
 void Meta::moveCursorRight() {
-    if (cursorX < FIELD_DIM_X - 1) {
+    if (cursorX < FIELD_DIM_X - 2) {
         cursorX++;
     }
 }
@@ -34,4 +43,8 @@ int Meta::getCursorX() {
 
 int Meta::getCursorY() {
     return cursorY;
+}
+
+char Meta::getGameFieldCharAt(int x, int y) {
+    return gameField[y][x];
 }
