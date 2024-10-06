@@ -14,6 +14,7 @@ static void printBorder() {
     setColor(AnsiRgbColorMode::BACKGROUND, 80, 80, 80);
     setColor(AnsiRgbColorMode::FOREGROUND, 0, 0, 0);
     for (int y = 0; y < FIELD_DIM_Y; y++) {
+        moveCursor(OFFSET_X, OFFSET_Y + y);
         for (int x = 0; x < FIELD_DIM_X; x++) {
             if (y == 0 || x == 0 || x == FIELD_DIM_X - 1 || y == FIELD_DIM_Y - 1) {
                 std::cout << '#';
@@ -29,14 +30,14 @@ static void printBorder() {
 }
 
 static void printCursor(Meta *meta) {
-    moveCursor(meta->getCursorX(), meta->getCursorY());
+    moveCursor(OFFSET_X + meta->getCursorX(), OFFSET_Y + meta->getCursorY());
     std::cout << "X" << std::flush;
 }
 
 static void printGameField(Meta *meta) {
     setColor(AnsiStyle::RESET, AnsiForegroundColor::WHITE, AnsiBackgroundColor::BLACK);
     for (int y = 0; y < FIELD_DIM_Y - 2; y++) {
-        moveCursor(1, y + 1);
+        moveCursor(OFFSET_X + 1, OFFSET_Y + y + 1);
         for (int x = 0; x < FIELD_DIM_X - 2; x++) {
             unsigned char c = meta->getGameFieldCharAt(x, y);
             if (c == WIRE_CHAR || c == TERM_CHAR) {
@@ -53,7 +54,7 @@ static void printGameField(Meta *meta) {
 }
 
 static void printLegend() {
-    moveCursor(0, FIELD_DIM_Y + 2);
+    moveCursor(0, OFFSET_Y + FIELD_DIM_Y + 2);
     setStyle(AnsiStyle::BOLD);
     std::cout << "How to captcha:" << std ::endl;
     setStyle(AnsiStyle::RESET);
@@ -77,13 +78,13 @@ void printOutput(Meta *meta) {
 }
 
 void clearLegend() {
-    moveCursor(0, FIELD_DIM_Y + 2);
+    moveCursor(0, OFFSET_Y + FIELD_DIM_Y + 2);
     clearLine();
-    moveCursor(0, FIELD_DIM_Y + 3);
+    moveCursor(0, OFFSET_Y + FIELD_DIM_Y + 3);
     clearLine();
-    moveCursor(0, FIELD_DIM_Y + 4);
+    moveCursor(0, OFFSET_Y + FIELD_DIM_Y + 4);
     clearLine();
-    moveCursor(0, FIELD_DIM_Y + 5);
+    moveCursor(0, OFFSET_Y + FIELD_DIM_Y + 5);
     clearLine();
 }
 

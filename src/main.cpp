@@ -5,11 +5,11 @@
 
 #define REFRESH_RATE_HZ 8
 
-static void printResultMessage(const char *message) {
+static void printResultMessage(const char *message0, const char *message1) {
     clearLegend();
-    moveCursor(0, FIELD_DIM_Y + 2);
-    std::cout << message << std::endl;
-    std::cout << "Would you be so kindly, and press any key to exit?" << std::endl;
+    moveCursor(0, OFFSET_Y + FIELD_DIM_Y + 2);
+    std::cout << message0 << std::endl;
+    std::cout << message1 << std::endl;
 }
 
 int main() {
@@ -29,10 +29,10 @@ int main() {
         // check captcha win or failed condition reached
         if (winConditionThread.hasSucceededCaptcha()) {
             meta.stopExecution();
-            printResultMessage("!! You seem to be a human, congratulations :D !!");
+            printResultMessage("!! You seem to be a human, congratulations :D !!", "Would you be so kindly, and press any key to exit?");
         } else if (winConditionThread.hasFailedCaptcha()) {
             meta.stopExecution();
-            printResultMessage("!! Go away, stinky AI :[ !!");
+            printResultMessage("!! Go away, stinky AI :[ !!", "I guess you will bruteforce yourself out anyway ...");
         } else {
             // print all captcha output to console
             printOutput(&meta);
@@ -44,7 +44,7 @@ int main() {
 
     // tease the user (or AI) ;)
     if (meta.hasUserSurrendered()) {
-        printResultMessage("What a shame ...");
+        printResultMessage("What a shame ...", "Better luck next time!");
     }
 
     // wait for the userInputThread to finish

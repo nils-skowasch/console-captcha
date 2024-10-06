@@ -3,6 +3,8 @@
 
 #include <atomic>
 
+#define OFFSET_X 24
+#define OFFSET_Y 4
 #define FIELD_DIM_X 12
 #define FIELD_DIM_Y 8
 #define CURSOR_CHAR 'X'
