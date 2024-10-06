@@ -54,7 +54,8 @@ void UserInputThread::readFromStdin() {
         // fetch user input
         if (read(STDIN_FILENO, &buffer, 1) > 0) {
             if (buffer == 'q') {
-                meta->stopExecution();
+                meta->userWantsToSurrender();
+                read(STDIN_FILENO, &buffer, 1); // wait for the user final key event ('press any key')
             } else if (buffer == ' ') {
                 meta->placeWire();
             } else if (buffer == 27) { // ansi escape char

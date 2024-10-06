@@ -11,7 +11,7 @@ void Meta::initGameField() {
     gameField[1][FIELD_DIM_X - 3] = TERM_CHAR;
 }
 
-Meta::Meta() : continueExecution(true) {
+Meta::Meta() : continueExecution(true), userSurrendered(false) {
     initGameField();
 }
 
@@ -54,6 +54,11 @@ void Meta::placeWire() {
     }
 }
 
+void Meta::userWantsToSurrender() {
+    userSurrendered = true;
+    stopExecution();
+}
+
 unsigned char Meta::getGameFieldCharAt(int x, int y) {
     return gameField[y][x];
 }
@@ -68,4 +73,8 @@ void Meta::stopExecution() {
 
 bool Meta::hasActionsLeft() {
     return actionsLeft > 0;
+}
+
+bool Meta::hasUserSurrendered() {
+    return userSurrendered;
 }

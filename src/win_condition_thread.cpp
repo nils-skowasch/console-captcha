@@ -98,6 +98,9 @@ void WinConditionThread::startThread(Meta *m) {
 }
 
 void WinConditionThread::joinThread() {
+    winConditionThread->join();
+    delete winConditionThread;
+    winConditionThread = nullptr;
 }
 
 bool WinConditionThread::hasSucceededCaptcha() {

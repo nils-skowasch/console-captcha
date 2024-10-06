@@ -8,7 +8,7 @@
 
 static bool flip = true;
 
-static void drawBorder() {
+static void printBorder() {
     // draw the game field border
     setStyle(AnsiStyle::BOLD);
     setColor(AnsiRgbColorMode::BACKGROUND, 80, 80, 80);
@@ -28,12 +28,12 @@ static void drawBorder() {
     setStyle(AnsiStyle::RESET);
 }
 
-static void drawCursor(Meta *meta) {
+static void printCursor(Meta *meta) {
     moveCursor(meta->getCursorX(), meta->getCursorY());
     std::cout << "X" << std::flush;
 }
 
-static void drawGameField(Meta *meta) {
+static void printGameField(Meta *meta) {
     setColor(AnsiStyle::RESET, AnsiForegroundColor::WHITE, AnsiBackgroundColor::BLACK);
     for (int y = 0; y < FIELD_DIM_Y - 2; y++) {
         moveCursor(1, y + 1);
@@ -52,20 +52,43 @@ static void drawGameField(Meta *meta) {
     std::cout << std::flush; // flush output stream
 }
 
-void drawField(Meta *meta) {
+static void printLegend() {
+    moveCursor(0, FIELD_DIM_Y + 2);
+    setStyle(AnsiStyle::BOLD);
+    std::cout << "How to captcha:" << std ::endl;
+    setStyle(AnsiStyle::RESET);
+    std::cout << "Arrow-Keys:\tNavigate the cursor." << std::endl;
+    std::cout << "Q:\t\tQuit and surrender ..." << std::endl;
+    std::cout << "Space:\t\tPlace a wire at the cursor's position." << std::endl;
+}
+
+void printOutput(Meta *meta) {
     hideCursor();
     clearConsole();
 
-    drawBorder();
-    drawGameField(meta);
+    printBorder();
+    printGameField(meta);
+    printLegend();
 
     if (flip) {
-        drawCursor(meta);
+        printCursor(meta);
     }
     flip = !flip; // flip border character to visualize redraw events
+}
+
+void clearLegend() {
+    moveCursor(0, FIELD_DIM_Y + 2);
+    clearLine();
+    moveCursor(0, FIELD_DIM_Y + 3);
+    clearLine();
+    moveCursor(0, FIELD_DIM_Y + 4);
+    clearLine();
+    moveCursor(0, FIELD_DIM_Y + 5);
+    clearLine();
 }
 
 void resetConsole() {
     clearConsole();
     showCursor();
+    std::cout << std::flush;
 }

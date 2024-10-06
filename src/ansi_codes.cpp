@@ -18,6 +18,10 @@ void clearConsole() {
     moveCursor(0, 0);
 }
 
+void clearLine(){
+    std::cout << ANSI_ESCAPE << "2K"; // 2K = clear the current line
+}
+
 void setStyle(AnsiStyle style){
     std::cout << ANSI_ESCAPE << static_cast<int>(style) << "m";
 }

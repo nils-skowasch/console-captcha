@@ -6,9 +6,10 @@
 #define REFRESH_RATE_HZ 8
 
 static void printResultMessage(const char *message) {
+    clearLegend();
     moveCursor(0, FIELD_DIM_Y + 2);
     std::cout << message << std::endl;
-    std::cout << "Press any key to exit." << std::endl;
+    std::cout << "Would you be so kindly, and press any key to exit?" << std::endl;
 }
 
 int main() {
@@ -28,17 +29,22 @@ int main() {
         // check captcha win or failed condition reached
         if (winConditionThread.hasSucceededCaptcha()) {
             meta.stopExecution();
-            printResultMessage("!! You SUCCEEDED the captcha :D !!");
+            printResultMessage("!! You seem to be a human, congratulations :D !!");
         } else if (winConditionThread.hasFailedCaptcha()) {
             meta.stopExecution();
-            printResultMessage("!! You FAILED the captcha :( !!");
-        } else { // continue drawing the captcha's game field
-            // draw the field
-            drawField(&meta);
+            printResultMessage("!! Go away, stinky AI :[ !!");
+        } else {
+            // print all captcha output to console
+            printOutput(&meta);
 
             // sleep a bit
             std::this_thread::sleep_for(std::chrono::milliseconds(1000 / REFRESH_RATE_HZ));
         }
+    }
+
+    // tease the user (or AI) ;)
+    if (meta.hasUserSurrendered()) {
+        printResultMessage("What a shame ...");
     }
 
     // wait for the userInputThread to finish

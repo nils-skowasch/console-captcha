@@ -12,6 +12,7 @@
 class Meta {
   private:
     std::atomic<bool> continueExecution;
+    std::atomic<bool> userSurrendered;
     int cursorX = 5;
     int cursorY = 5;
     unsigned char gameField[FIELD_DIM_Y - 2][FIELD_DIM_X - 2];
@@ -27,10 +28,12 @@ class Meta {
     int getCursorX();
     int getCursorY();
     void placeWire();
+    void userWantsToSurrender();
     unsigned char getGameFieldCharAt(int x, int y);
     bool isContinueExecution();
     void stopExecution();
     bool hasActionsLeft();
+    bool hasUserSurrendered();
 };
 
 #endif
