@@ -11,7 +11,7 @@ void Meta::initGameField() {
     gameField[1][FIELD_DIM_X - 3] = TERM_CHAR;
 }
 
-Meta::Meta() {
+Meta::Meta() : continueExecution(true) {
     initGameField();
 }
 
@@ -48,9 +48,24 @@ int Meta::getCursorY() {
 }
 
 void Meta::placeWire() {
-    gameField[cursorY - 1][cursorX - 1] = WIRE_CHAR;
+    if (hasActionsLeft()) {
+        gameField[cursorY - 1][cursorX - 1] = WIRE_CHAR;
+        actionsLeft--;
+    }
 }
 
 unsigned char Meta::getGameFieldCharAt(int x, int y) {
     return gameField[y][x];
+}
+
+bool Meta::isContinueExecution() {
+    return continueExecution;
+}
+
+void Meta::stopExecution() {
+    continueExecution = false;
+}
+
+bool Meta::hasActionsLeft() {
+    return actionsLeft > 0;
 }

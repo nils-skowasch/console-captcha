@@ -1,25 +1,23 @@
-#ifndef user_input_h
-#define user_input_h
+#ifndef user_input_thread_h
+#define user_input_thread_h
 
 #include "meta.h"
 #include <atomic>
 #include <thread>
 #include <unistd.h>
 
-class UserInput {
+class UserInputThread {
   private:
-    std::atomic<bool> continue_execution;
     std::atomic<char> buffer;
     std::thread *inputThread;
     Meta *meta;
     void readFromStdin();
 
   public:
-    UserInput();
-    ~UserInput();
+    UserInputThread();
+    ~UserInputThread();
     void startThread(Meta *m);
     void joinThread();
-    bool isContinueExceution();
 };
 
 #endif

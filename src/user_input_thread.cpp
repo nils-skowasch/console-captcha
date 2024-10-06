@@ -1,4 +1,4 @@
-#include "user_input.h"
+#include "user_input_thread.h"
 #include "meta.h"
 #include <atomic>
 #include <termios.h>
@@ -38,23 +38,23 @@ static void enableCanonicalMode() {
     tcsetattr(STDIN_FILENO, TCSANOW, &term);
 }
 
-UserInput::UserInput() : continue_execution(true), buffer(0), inputThread(nullptr), meta(nullptr) {
+UserInputThread::UserInputThread() : buffer(0), inputThread(nullptr), meta(nullptr) {
     disableCanonicalMode();
 }
 
-UserInput::~UserInput() {
+UserInputThread::~UserInputThread() {
     enableCanonicalMode();
 }
 
-void UserInput::readFromStdin() {
+void UserInputThread::readFromStdin() {
     bool escape_mode = false; // used to switch into "ansi-escape-char-parsing-mode" ;)
 
     // continue, until user quits with 'q'
-    while (continue_execution) {
+    while (meta->isContinueExecution()) {
         // fetch user input
         if (read(STDIN_FILENO, &buffer, 1) > 0) {
             if (buffer == 'q') {
-                continue_execution = false;
+                meta->stopExecution();
             } else if (buffer == ' ') {
                 meta->placeWire();
             } else if (buffer == 27) { // ansi escape char
@@ -76,17 +76,13 @@ void UserInput::readFromStdin() {
     }
 }
 
-void UserInput::startThread(Meta *m) {
+void UserInputThread::startThread(Meta *m) {
     meta = m;
     inputThread = new std::thread([this] { readFromStdin(); });
 }
 
-void UserInput::joinThread() {
+void UserInputThread::joinThread() {
     inputThread->join();
     delete inputThread;
     inputThread = nullptr;
-}
-
-bool UserInput::isContinueExceution() {
-    return continue_execution;
 }
