@@ -1,8 +1,8 @@
 #include "ansi_codes.h"
 #include <iostream>
 
-void moveCursor(int x, int y) {
-    std::cout << ANSI_ESCAPE << (y + 1) << ";" << (x + 1) << "H";
+void moveCursor(int absoluteX, int absoluteY) {
+    std::cout << ANSI_ESCAPE << (absoluteY + 1) << ";" << (absoluteX + 1) << "H";
 }
 
 void hideCursor() {

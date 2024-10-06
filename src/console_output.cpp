@@ -8,8 +8,23 @@
 
 static bool flip = true;
 
+/**
+ * Print an intro header to explain the captcha task.
+ */
+static void printHeader() {
+    moveCursor(0, 0);
+    setStyle(AnsiStyle::BOLD);
+    setStyle(AnsiStyle::UNDERLINED);
+    std::cout << "You shall not pass!! Well.. unless you can proove, that you are a human." << std::endl;
+    setStyle(AnsiStyle::RESET);
+    std::cout << "Please fix the wiring, the AI screwed up!" << std::endl;
+    std::cout << "The wire has to get from the entry node (" << WIRE_CHAR << ") to the exit node (" << TERM_CHAR << ")." << std::endl;
+}
+
+/**
+ * Draw the game field border
+ */
 static void printBorder() {
-    // draw the game field border
     setStyle(AnsiStyle::BOLD);
     setColor(AnsiRgbColorMode::BACKGROUND, 80, 80, 80);
     setColor(AnsiRgbColorMode::FOREGROUND, 0, 0, 0);
@@ -67,8 +82,11 @@ void printOutput(Meta *meta) {
     hideCursor();
     clearConsole();
 
+    printHeader();
+
     printBorder();
     printGameField(meta);
+
     printLegend();
 
     if (flip) {
