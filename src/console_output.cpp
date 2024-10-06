@@ -4,33 +4,20 @@
 
 #include "console_output.h"
 #include "meta.h"
+#include "ansi_codes.cpp"
 
 static bool flip = true;
 
-static void moveCursor(int x, int y) {
-    std::cout << "\033[" << (y + 1) << ";" << (x + 1) << "H";
-}
 
-static void hideCursor() {
-    std::cout << "\033[?25l]";
-}
-
-static void showCursor() {
-    std::cout << "\033[?25h";
-}
-
-static void clearConsole() {
-    // 2J = clear screen; 1;1H = move cursor to row 1, column 1
-    std::cout << "\033[2J";
-    moveCursor(0, 0);
-}
 
 static void drawBorder() {
     // draw the game field border
     for (int y = 0; y < FIELD_DIM_Y; y++) {
         for (int x = 0; x < FIELD_DIM_X; x++) {
             if (y == 0 || x == 0 || x == FIELD_DIM_X - 1 || y == FIELD_DIM_Y - 1) {
+                setColor(AnsiStyle::BOLD, AnsiForegroundColor::MAGENTA, AnsiBackgroundColor::MAGENTA);
                 std::cout << (flip ? "#" : "+");
+                setColor(AnsiStyle::RESET, AnsiForegroundColor::WHITE, AnsiBackgroundColor::BLACK);
             } else {
                 std::cout << " ";
             }
@@ -52,35 +39,13 @@ static void drawCursor(Meta *meta) {
 void drawField(Meta *meta) {
     hideCursor();
     clearConsole();
+
     drawBorder();
+        
     drawCursor(meta);
 }
 
 void resetConsole() {
     clearConsole();
     showCursor();
-}
-
-void console_playground() {
-    // Clear the screen
-    std::cout << "\033[2J\033[1;1H"; // Clear the screen and move cursor to (1,1)
-
-    // Print some text
-    std::cout << "Hello, World!" << std::endl;
-
-    // Move the cursor to row 5, column 3
-    std::cout << "\033[5;3H"; // Move cursor to row 5, column 10
-    std::cout << "This is at (5, 3)" << std::endl;
-
-    // Move the cursor up by one line
-    std::cout << "\033[A\033[A"; // Move cursor up, twice
-    std::cout << "Moved up!" << std::endl;
-
-    // Move the cursor down by one line
-    std::cout << "\033[B\033[0G"; // Move cursor down "B" and to the start of
-                                  // the line "0G"
-    std::cout << "Moved down!" << std::endl;
-
-    // Move the cursor back to the beginning
-    std::cout << "\033[1;1H"; // Move cursor back to (1,1)
 }
