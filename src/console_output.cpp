@@ -44,11 +44,17 @@ static void printBorder() {
     setStyle(AnsiStyle::RESET);
 }
 
+/**
+ * Print the game cursor
+ */
 static void printCursor(Meta *meta) {
     moveCursor(OFFSET_X + meta->getCursorX(), OFFSET_Y + meta->getCursorY());
     std::cout << "X" << std::flush;
 }
 
+/**
+ * Print the current state of the game field
+ */
 static void printGameField(Meta *meta) {
     setColor(AnsiStyle::RESET, AnsiForegroundColor::WHITE, AnsiBackgroundColor::BLACK);
     for (int y = 0; y < FIELD_DIM_Y - 2; y++) {
@@ -68,8 +74,11 @@ static void printGameField(Meta *meta) {
     std::cout << std::flush; // flush output stream
 }
 
+/**
+ * Print the legend, with explenations, how to play
+ */
 static void printLegend() {
-    moveCursor(0, OFFSET_Y + FIELD_DIM_Y + 2);
+    moveCursor(0, OFFSET_Y + FIELD_DIM_Y + 1);
     setStyle(AnsiStyle::BOLD);
     std::cout << "How to captcha:" << std ::endl;
     setStyle(AnsiStyle::RESET);
@@ -78,6 +87,9 @@ static void printLegend() {
     std::cout << "Space:\t\tPlace a wire at the cursor's position." << std::endl;
 }
 
+/**
+ * Print the complete output
+ */
 void printOutput(Meta *meta) {
     hideCursor();
     clearConsole();
@@ -95,17 +107,23 @@ void printOutput(Meta *meta) {
     flip = !flip; // flip border character to visualize redraw events
 }
 
+/**
+ * Erase the legend section of the output
+ */
 void clearLegend() {
+    moveCursor(0, OFFSET_Y + FIELD_DIM_Y + 1);
+    clearLine();
     moveCursor(0, OFFSET_Y + FIELD_DIM_Y + 2);
     clearLine();
     moveCursor(0, OFFSET_Y + FIELD_DIM_Y + 3);
     clearLine();
     moveCursor(0, OFFSET_Y + FIELD_DIM_Y + 4);
     clearLine();
-    moveCursor(0, OFFSET_Y + FIELD_DIM_Y + 5);
-    clearLine();
 }
 
+/**
+ * Reset the terminal to the default state
+ */
 void resetConsole() {
     clearConsole();
     showCursor();
