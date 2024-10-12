@@ -9,7 +9,7 @@ SRC_DIR = src
 TARGET_DIR = target
 
 # Target executable
-TARGET = $(TARGET_DIR)/hello_world
+TARGET = $(TARGET_DIR)/console-captcha
 
 # Source files
 SRCS = $(SRC_DIR)/main.cpp
