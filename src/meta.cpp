@@ -95,6 +95,15 @@ Wire *Meta::createWire(Color color) {
     return wire;
 }
 
+Wire *Meta::createWire(ColorMix colorMix) {
+    // create new Wire object
+    int wireCount = wires.size();
+    Wire *wire = new Wire(wireCount, colorMix);
+    // push to vector
+    wires.push_back(wire);
+    return wire;
+}
+
 Meta::Meta() {
     initGameField();
 }
@@ -162,7 +171,11 @@ void Meta::placeWire() {
         int fieldY = cursorY - 1;
         Node *node = gameField[fieldY][fieldX];
         if (node == nullptr || !dynamic_cast<Merger *>(node)) { // the field must be empty or not contain a Merger!
-            gameField[cursorY - 1][cursorX - 1] = createWire(selectedColor);
+            if (selectedColorMix != ColorMix::None) {
+                gameField[fieldY][fieldX] = createWire(selectedColorMix);
+            } else {
+                gameField[fieldY][fieldX] = createWire(selectedColor);
+            }
             actionsLeft--;
         }
     }

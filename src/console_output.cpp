@@ -98,10 +98,10 @@ static void printLeftSide(Meta *meta) {
     moveCursor(localOffsetX, OFFSET_Y + localOffsetY++);
     std::cout << "Selected color: ";
     ColorMix colorMix = meta->getSelectedColorMix();
-    if(colorMix != ColorMix::None){
+    if (colorMix != ColorMix::None) {
         printColorName(colorMix);
         std::cout << " (mix)";
-    }else{
+    } else {
         printColorName(meta->getSelectedColor());
     }
 }

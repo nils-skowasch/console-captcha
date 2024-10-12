@@ -56,6 +56,7 @@ class Merger : public Node {
   private:
     int x;
     int y;
+
   public:
     Merger(int x, int y);
     int getX();
@@ -94,6 +95,7 @@ class Meta {
     // methods
     void initGameField();
     Wire *createWire(Color color);
+    Wire *createWire(ColorMix colorMix);
 
   public:
     Meta();
