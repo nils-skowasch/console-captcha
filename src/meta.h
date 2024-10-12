@@ -11,6 +11,7 @@
 #define FIELD_DIM_Y 8
 #define CURSOR_CHAR 'X'
 #define WIRE_CHAR '>'
+#define MERGER_CHAR '+'
 #define TERM_CHAR '='
 #define USER_ACTIONS 24
 

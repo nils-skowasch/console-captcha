@@ -1,4 +1,3 @@
-
 #ifndef color_table_h
 #define color_table_h
 

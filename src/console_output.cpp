@@ -18,7 +18,7 @@ static void printHeader() {
     std::cout << "You shall not pass!! Well.. unless you can proove, that you are a human." << std::endl;
     setStyle(AnsiStyle::RESET);
     std::cout << "Please fix the wiring, the AI screwed up!" << std::endl;
-    std::cout << "The wire has to get from the entry node (" << WIRE_CHAR << ") to the exit node (" << TERM_CHAR << ")."
+    std::cout << "The wires have to get from the entry nodes (" << WIRE_CHAR << ") to the Merger (" << MERGER_CHAR << ") and then to the exit node (" << TERM_CHAR << ")."
               << std::endl;
 }
 

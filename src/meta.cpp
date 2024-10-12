@@ -30,7 +30,7 @@ Wire::Wire(int id, Color color) : Node(WIRE_CHAR, color), id(id){};
 
 Wire::Wire(int id, ColorMix colorMix) : Node(WIRE_CHAR, colorMix), id(id){};
 
-Merger::Merger(int x, int y) : Node('+', Color::None), x(x), y(y) {
+Merger::Merger(int x, int y) : Node(MERGER_CHAR, Color::None), x(x), y(y) {
 }
 
 int Merger::getX() {
