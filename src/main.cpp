@@ -1,7 +1,7 @@
-#include "console_output.cpp"
-#include "meta.cpp"
-#include "user_input_thread.cpp"
-#include "win_condition_thread.cpp"
+#include "io/console_output.cpp"
+#include "obj/meta.cpp"
+#include "thread/user_input_thread.cpp"
+#include "thread/win_condition_thread.cpp"
 
 #define REFRESH_RATE_HZ 8
 

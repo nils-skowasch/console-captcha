@@ -1,7 +1,7 @@
 #ifndef meta_h
 #define meta_h
 
-#include "color_table.h"
+#include "../io/color_table.h"
 #include <atomic>
 #include <vector>
 

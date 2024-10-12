@@ -3,8 +3,7 @@
 #include <thread>
 
 #include "ansi_codes.cpp"
-#include "console_output.h"
-#include "meta.h"
+#include "../obj/meta.h"
 
 static bool flip = true;
 

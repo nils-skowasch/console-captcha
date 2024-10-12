@@ -1,7 +1,7 @@
 #ifndef user_input_thread_h
 #define user_input_thread_h
 
-#include "meta.h"
+#include "../obj/meta.h"
 #include <atomic>
 #include <thread>
 #include <unistd.h>

@@ -1,7 +1,7 @@
 #ifndef win_condition_h
 #define win_condition_h
 
-#include "meta.h"
+#include "../obj/meta.h"
 #include <thread>
 #include <vector>
 

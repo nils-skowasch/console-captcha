@@ -1,6 +1,5 @@
 #include "meta.h"
-#include "color_table.cpp"
-#include "console_output.h"
+#include "../io/color_table.cpp"
 #include <cstdlib>
 #include <ctime>
 #include <stdexcept>
@@ -178,8 +177,9 @@ void Meta::placeWire() {
         int fieldX = cursorX - 1;
         int fieldY = cursorY - 1;
         Node *node = gameField[fieldY][fieldX];
-        if (node == nullptr || (!dynamic_cast<Merger *>(node) &&
-                                !dynamic_cast<Term *>(node))) { // the field must be empty or neither contain a Merger nor Terminus!
+        if (node == nullptr ||
+            (!dynamic_cast<Merger *>(node) &&
+             !dynamic_cast<Term *>(node))) { // the field must be empty or neither contain a Merger nor Terminus!
             if (selectedColorMix != ColorMix::None) {
                 gameField[fieldY][fieldX] = createWire(selectedColorMix);
             } else {

@@ -1,5 +1,5 @@
 #include "user_input_thread.h"
-#include "meta.h"
+#include "../obj/meta.h"
 #include <atomic>
 #include <termios.h>
 #include <thread>
