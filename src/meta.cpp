@@ -75,6 +75,12 @@ void Meta::initGameField() {
     wireStart1 = new WireStart(0, startY1, wire->getId());
     gameField[startY1][0] = wire;
 
+    // place randomized merger
+    int mergerX = (std::rand() % 4) + (FIELD_DIM_X / 2) - 2;
+    int mergerY = (std::rand() % 4) + (FIELD_DIM_Y / 2) - 2;
+    merger = new Merger(mergerX, mergerY);
+    gameField[mergerY][mergerX] = merger;
+
     // place randomized end node
     int endY = std::rand() % (FIELD_DIM_Y - 2);
     gameField[endY][FIELD_DIM_X - 3] = &term;
@@ -102,6 +108,11 @@ Meta::~Meta() {
     if (wireStart1 != nullptr) {
         delete wireStart1;
         wireStart1 = nullptr;
+    }
+    // delete merger
+    if (merger != nullptr) {
+        delete merger;
+        merger = nullptr;
     }
     // delete all wires
     for (Wire *wire : wires) {
@@ -147,8 +158,13 @@ int Meta::getActionsLeft() {
 
 void Meta::placeWire() {
     if (hasActionsLeft()) {
-        gameField[cursorY - 1][cursorX - 1] = createWire(selectedColor);
-        actionsLeft--;
+        int fieldX = cursorX - 1;
+        int fieldY = cursorY - 1;
+        Node *node = gameField[fieldY][fieldX];
+        if (node == nullptr || !dynamic_cast<Merger *>(node)) { // the field must be empty or not contain a Merger!
+            gameField[cursorY - 1][cursorX - 1] = createWire(selectedColor);
+            actionsLeft--;
+        }
     }
 }
 
