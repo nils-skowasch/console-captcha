@@ -90,6 +90,22 @@ const char *getName(ColorMix colorMix) {
     }
 }
 
+unsigned char toChar(Color color) {
+    return static_cast<unsigned char>(static_cast<int>(color) + 64); // convert Color index to characters A-D
+}
+
+Color toColor(unsigned char character) {
+    int colorIndex;
+    if (character >= COLOR_CHAR_START_UPPER && character <= COLOR_CHAR_END_UPPER) {
+        colorIndex = static_cast<int>(character) - 64;
+    } else if (character >= COLOR_CHAR_START_LOWER && character <= COLOR_CHAR_END_LOWER) {
+        colorIndex = static_cast<int>(character) - 96;
+    } else {
+        throw std::runtime_error("Unexpected character given!");
+    }
+    return static_cast<Color>(colorIndex);
+}
+
 Color getRandomColor() {
     int index = (std::rand() % (COLOR_COUNT - 1)) + 1;
     return static_cast<Color>(index);

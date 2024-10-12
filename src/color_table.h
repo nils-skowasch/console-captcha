@@ -3,6 +3,11 @@
 #define color_table_h
 
 #define COLOR_COUNT 4
+#define COLOR_MIX_COUNT 9
+#define COLOR_CHAR_START_UPPER 'A'
+#define COLOR_CHAR_START_LOWER 'a'
+#define COLOR_CHAR_END_UPPER 'D'
+#define COLOR_CHAR_END_LOWER 'd'
 
 struct RGB {
     int red;
@@ -30,6 +35,9 @@ RGB getRGB(ColorMix colorMix);
 
 const char* getName(Color color);
 const char* getName(ColorMix colorMix);
+
+unsigned char toChar(Color color);
+Color toColor(unsigned char character);
 
 Color getRandomColor();
 

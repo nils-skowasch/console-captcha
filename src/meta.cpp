@@ -188,8 +188,18 @@ Color Meta::getSelectedColor() {
     return selectedColor;
 }
 
+ColorMix Meta::getSelectedColorMix() {
+    return selectedColorMix;
+}
+
 void Meta::setSelectedColor(Color color) {
     selectedColor = color;
+    selectedColorMix = ColorMix::None;
+}
+
+void Meta::setSelectedColorMix(ColorMix colorMix) {
+    selectedColor = Color::None;
+    selectedColorMix = colorMix;
 }
 
 int Wire::getId() {

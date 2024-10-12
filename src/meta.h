@@ -48,6 +48,7 @@ class StartWire {
     int x;
     int y;
     int wireId;
+
   public:
     StartWire(int x, int y, int wireId);
     int getX();
@@ -65,12 +66,13 @@ class Meta {
     int cursorY = 5;
     // gamefield wiring
     Node *gameField[FIELD_DIM_Y - 2][FIELD_DIM_X - 2];
-    int actionsLeft = USER_ACTIONS; // is not enough, if the start and end points are too far away ... but some real world
-                          // captcha's are not solveable either ;)
+    int actionsLeft = USER_ACTIONS; // is not enough, if the start and end points are too far away ... but some real
+                                    // world captcha's are not solveable either ;)
     StartWire *startWire0 = nullptr;
     StartWire *startWire1 = nullptr;
     std::vector<Wire *> wires = {};
     Color selectedColor = Color::None;
+    ColorMix selectedColorMix = ColorMix::None;
     Term term = Term(ColorMix::None);
     // methods
     void initGameField();
@@ -93,10 +95,12 @@ class Meta {
     void stopExecution();
     bool hasActionsLeft();
     bool hasUserSurrendered();
-    StartWire* getStartWire0();
-    StartWire* getStartWire1();
+    StartWire *getStartWire0();
+    StartWire *getStartWire1();
     Color getSelectedColor();
+    ColorMix getSelectedColorMix();
     void setSelectedColor(Color color);
+    void setSelectedColorMix(ColorMix colorMix);
 };
 
 #endif

@@ -46,6 +46,10 @@ UserInputThread::~UserInputThread() {
     enableCanonicalMode();
 }
 
+bool UserInputThread::isColorChar(unsigned char character) {
+    return character >= 'A' && character <= 'D';
+}
+
 void UserInputThread::readFromStdin() {
     bool escape_mode = false; // used to switch into "ansi-escape-char-parsing-mode" ;)
 
@@ -58,9 +62,11 @@ void UserInputThread::readFromStdin() {
                 read(STDIN_FILENO, &buffer, 1); // wait for the user final key event ('press any key')
             } else if (buffer == ' ') {
                 meta->placeWire();
-            } else if(buffer == '1' || buffer == '2' || buffer == '3' || buffer == '4'){
+            } else if((buffer >= COLOR_CHAR_START_UPPER && buffer <= COLOR_CHAR_END_UPPER) || (buffer >= COLOR_CHAR_START_LOWER && buffer <= COLOR_CHAR_END_LOWER)) {
+                meta->setSelectedColor(toColor(buffer));
+            } else if(buffer >= '1' && buffer <= '9'){
                 int colorIndex = buffer - '0';
-                meta->setSelectedColor(static_cast<Color>(colorIndex));
+                meta->setSelectedColorMix(static_cast<ColorMix>(colorIndex));
             } else if (buffer == 27) { // ansi escape char
                 escape_mode = true;
             } else if (escape_mode && buffer == 91) {

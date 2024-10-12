@@ -11,6 +11,8 @@ class UserInputThread {
     std::atomic<char> buffer;
     std::thread *inputThread;
     Meta *meta;
+    bool isColorChar(unsigned char character);
+    bool isColorIndex(unsigned char character);
     void readFromStdin();
 
   public:

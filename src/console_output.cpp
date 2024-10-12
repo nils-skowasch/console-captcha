@@ -25,23 +25,50 @@ static void printHeader() {
 /**
  * Prints the name in colored form at the current cursor position
  */
-static void printColorName(Color color) {
-    RGB rgb = getRGB(color);
-    const char *name = getName(color);
+static void printColorName(RGB &rgb, const char *name) {
     // set ANSI style and color accordingly
     setStyle(AnsiStyle::BOLD);
     setColor(AnsiRgbColorMode::FOREGROUND, rgb.red, rgb.green, rgb.blue);
     setColor(AnsiRgbColorMode::BACKGROUND, 0, 0, 0);
+
     // print name
     std::cout << name;
+
     // reset styles
     setStyle(AnsiStyle::RESET);
+}
+
+/**
+ * Prints the Color name in colored form at the current cursor position
+ */
+static void printColorName(Color color) {
+    RGB rgb = getRGB(color);
+    const char *name = getName(color);
+    printColorName(rgb, name);
+}
+
+/**
+ * Prints the ColorMix name in colored form at the current cursor position
+ */
+static void printColorName(ColorMix colorMix) {
+    RGB rgb = getRGB(colorMix);
+    const char *name = getName(colorMix);
+    printColorName(rgb, name);
 }
 
 /**
  * Print a line for the given color
  */
 static void printWireColor(int absoluteX, int absoluteY, Color color) {
+    moveCursor(absoluteX, absoluteY);
+    std::cout << "[" << toChar(color) << "] "; // convert color index to ascii chars A-D
+    printColorName(color);
+}
+
+/**
+ * Print a line for the given color mix
+ */
+static void printWireColor(int absoluteX, int absoluteY, ColorMix color) {
     moveCursor(absoluteX, absoluteY);
     std::cout << "[" << static_cast<int>(color) << "] ";
     printColorName(color);
@@ -54,11 +81,28 @@ static void printLeftSide(Meta *meta) {
     int localOffsetX = 0;
     int localOffsetY = 0;
 
+    // print base colors
     moveCursor(localOffsetX, OFFSET_Y + localOffsetY++);
-    std::cout << "Select wire color:";
-
+    std::cout << "Select base wire color:";
     for (int i = 0; i < COLOR_COUNT; i++) {
         printWireColor(localOffsetX, OFFSET_Y + localOffsetY++, static_cast<Color>(i + 1));
+    }
+
+    localOffsetY++;
+
+    // print remaining wires
+    moveCursor(localOffsetX, OFFSET_Y + localOffsetY++);
+    std::cout << "Wire left: " << meta->getActionsLeft() << "m";
+
+    // print selected color (or mix)
+    moveCursor(localOffsetX, OFFSET_Y + localOffsetY++);
+    std::cout << "Selected color: ";
+    ColorMix colorMix = meta->getSelectedColorMix();
+    if(colorMix != ColorMix::None){
+        printColorName(colorMix);
+        std::cout << " (mix)";
+    }else{
+        printColorName(meta->getSelectedColor());
     }
 }
 
@@ -66,14 +110,12 @@ static void printRightSide(Meta *meta) {
     int localOffsetX = 8;
     int localOffsetY = 0;
 
-    moveCursor(OFFSET_X + FIELD_DIM_X + localOffsetX, OFFSET_Y + localOffsetY);
-    std::cout << "Wire left: " << meta->getActionsLeft() << "m";
-
-    localOffsetY += 2;
-
-    moveCursor(OFFSET_X + FIELD_DIM_X + localOffsetX, OFFSET_Y + localOffsetY);
-    std::cout << "Selected color: ";
-    printColorName(meta->getSelectedColor());
+    // print mixed colors
+    moveCursor(OFFSET_X + FIELD_DIM_X + localOffsetX, OFFSET_Y + localOffsetY++);
+    std::cout << "Select mixed wire color:";
+    for (int i = 0; i < COLOR_MIX_COUNT; i++) {
+        printWireColor(OFFSET_X + FIELD_DIM_X + localOffsetX, OFFSET_Y + localOffsetY++, static_cast<ColorMix>(i + 1));
+    }
 }
 
 /**
