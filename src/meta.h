@@ -14,6 +14,19 @@
 #define TERM_CHAR '='
 #define USER_ACTIONS 24
 
+class WireStart {
+  private:
+    int x;
+    int y;
+    int wireId;
+
+  public:
+    WireStart(int x, int y, int wireId);
+    int getX();
+    int getY();
+    int getWireId();
+};
+
 class Node {
   private:
     Color color;
@@ -39,22 +52,19 @@ class Wire : public Node {
     int getId();
 };
 
-class Term : public Node {
-  public:
-    Term(ColorMix colorMix);
-};
-
-class StartWire {
+class Merger : public Node {
   private:
     int x;
     int y;
-    int wireId;
-
   public:
-    StartWire(int x, int y, int wireId);
+    Merger(int x, int y);
     int getX();
     int getY();
-    int getWireId();
+};
+
+class Term : public Node {
+  public:
+    Term(ColorMix colorMix);
 };
 
 class Meta {
@@ -69,11 +79,17 @@ class Meta {
     Node *gameField[FIELD_DIM_Y - 2][FIELD_DIM_X - 2];
     int actionsLeft = USER_ACTIONS; // is not enough, if the start and end points are too far away ... but some real
                                     // world captcha's are not solveable either ;)
-    StartWire *startWire0 = nullptr;
-    StartWire *startWire1 = nullptr;
+    // the two entry wires (heap)
+    WireStart *wireStart0 = nullptr;
+    WireStart *wireStart1 = nullptr;
+    // created wire objects (heap)
     std::vector<Wire *> wires = {};
+    // user selects colors
     Color selectedColor = Color::None;
     ColorMix selectedColorMix = ColorMix::None;
+    // merger object
+    Merger *merger = nullptr;
+    // terminus object
     Term term = Term(ColorMix::None);
     // methods
     void initGameField();
@@ -96,8 +112,8 @@ class Meta {
     void stopExecution();
     bool hasActionsLeft();
     bool hasUserSurrendered();
-    StartWire *getStartWire0();
-    StartWire *getStartWire1();
+    WireStart *getWireStart0();
+    WireStart *getWireStart1();
     Color getSelectedColor();
     ColorMix getSelectedColorMix();
     void setSelectedColor(Color color);

@@ -30,20 +30,23 @@ Wire::Wire(int id, Color color) : Node(color, WIRE_CHAR), id(id){};
 
 Wire::Wire(int id, ColorMix colorMix) : Node(colorMix, WIRE_CHAR), id(id){};
 
-Term::Term(ColorMix colorMix) : Node(colorMix, TERM_CHAR){};
-
-StartWire::StartWire(int x, int y, int wireId) : x(x), y(y), wireId(wireId) {
+Merger::Merger(int x, int y) : Node(Color::None, '+'), x(x), y(y) {
 }
 
-int StartWire::getX() {
+Term::Term(ColorMix colorMix) : Node(colorMix, TERM_CHAR){};
+
+WireStart::WireStart(int x, int y, int wireId) : x(x), y(y), wireId(wireId) {
+}
+
+int WireStart::getX() {
     return x;
 }
 
-int StartWire::getY() {
+int WireStart::getY() {
     return y;
 }
 
-int StartWire::getWireId() {
+int WireStart::getWireId() {
     return wireId;
 }
 
@@ -60,7 +63,7 @@ void Meta::initGameField() {
     // place randomized start wire 0
     int startY0 = std::rand() % (FIELD_DIM_Y - 2);
     Wire *wire = createWire(getRandomColor());
-    startWire0 = new StartWire(0, startY0, wire->getId());
+    wireStart0 = new WireStart(0, startY0, wire->getId());
     gameField[startY0][0] = wire;
 
     // place randomized start wire 1
@@ -69,7 +72,7 @@ void Meta::initGameField() {
         startY1 = std::rand() % (FIELD_DIM_Y - 2);
     }
     wire = createWire(getRandomColor());
-    startWire1 = new StartWire(0, startY1, wire->getId());
+    wireStart1 = new WireStart(0, startY1, wire->getId());
     gameField[startY1][0] = wire;
 
     // place randomized end node
@@ -92,13 +95,13 @@ Meta::Meta() {
 
 Meta::~Meta() {
     // delete all StartWire objects
-    if (startWire0 != nullptr) {
-        delete startWire0;
-        startWire0 = nullptr;
+    if (wireStart0 != nullptr) {
+        delete wireStart0;
+        wireStart0 = nullptr;
     }
-    if (startWire1 != nullptr) {
-        delete startWire1;
-        startWire1 = nullptr;
+    if (wireStart1 != nullptr) {
+        delete wireStart1;
+        wireStart1 = nullptr;
     }
     // delete all wires
     for (Wire *wire : wires) {
@@ -182,12 +185,12 @@ bool Meta::hasUserSurrendered() {
     return userSurrendered;
 }
 
-StartWire *Meta::getStartWire0() {
-    return startWire0;
+WireStart *Meta::getWireStart0() {
+    return wireStart0;
 }
 
-StartWire *Meta::getStartWire1() {
-    return startWire1;
+WireStart *Meta::getWireStart1() {
+    return wireStart1;
 }
 
 Color Meta::getSelectedColor() {

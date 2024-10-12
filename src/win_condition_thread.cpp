@@ -14,14 +14,14 @@ void WinConditionThread::handleCaptcha() {
             return;
         }
 
-        // follow startWire0
+        // follow wireStart0
         if (!captchaSucceeded) {
-            captchaSucceeded = followWire(meta->getStartWire0());
+            captchaSucceeded = followWire(meta->getWireStart0());
         }
 
-        // follow startWire1
+        // follow wireStart1
         if (!captchaSucceeded) {
-            captchaSucceeded = followWire(meta->getStartWire1());
+            captchaSucceeded = followWire(meta->getWireStart1());
         }
 
         // sleep one second
@@ -63,9 +63,9 @@ bool WinConditionThread::followWire(std::vector<int> *seenWireIds, int lastWireX
     return false; // found nothing, the captcha has not been solved yet
 }
 
-bool WinConditionThread::followWire(StartWire *startWire) {
+bool WinConditionThread::followWire(WireStart *wireStart) {
     std::vector<int> seenWireIds(USER_ACTIONS);
-    return followWire(&seenWireIds, startWire->getX(), startWire->getY(), startWire->getX(), startWire->getY());
+    return followWire(&seenWireIds, wireStart->getX(), wireStart->getY(), wireStart->getX(), wireStart->getY());
 }
 
 bool WinConditionThread::followWireNext(std::vector<int> *seenWireIds, Wire *currentWire, int currentWireX,
