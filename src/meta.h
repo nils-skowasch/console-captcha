@@ -95,6 +95,7 @@ class Meta {
     bool hasUserSurrendered();
     StartWire* getStartWire0();
     StartWire* getStartWire1();
+    Color getSelectedColor();
 };
 
 #endif

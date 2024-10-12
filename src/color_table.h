@@ -28,6 +28,9 @@ enum class ColorMix {
 RGB getRGB(Color color);
 RGB getRGB(ColorMix colorMix);
 
+const char* getName(Color color);
+const char* getName(ColorMix colorMix);
+
 Color getRandomColor();
 
 #endif

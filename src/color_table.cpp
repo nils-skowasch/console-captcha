@@ -4,6 +4,8 @@
 
 RGB getRGB(Color color) {
     switch (color) {
+    case Color::None:
+        return {42, 42, 42};
     case Color::RED:
         return {255, 0, 0};
     case Color::GREEN:
@@ -20,7 +22,7 @@ RGB getRGB(Color color) {
 RGB getRGB(ColorMix colorMix) {
     switch (colorMix) {
     case ColorMix::None:
-        return {42, 42, 42};
+        return getRGB(Color::None);
     case ColorMix::RED:
         return getRGB(Color::RED);
     case ColorMix::BROWN:
@@ -39,6 +41,50 @@ RGB getRGB(ColorMix colorMix) {
         return getRGB(Color::BLUE);
     case ColorMix::YELLOW:
         return getRGB(Color::YELLOW);
+    default:
+        throw std::runtime_error("Unexpected ColorMix enum value! Guess you lost the captcha^^");
+    }
+}
+
+const char *getName(Color color) {
+    switch (color) {
+    case Color::None:
+        return "None";
+    case Color::RED:
+        return "Red";
+    case Color::GREEN:
+        return "Green";
+    case Color::BLUE:
+        return "Blue";
+    case Color::YELLOW:
+        return "Yellow";
+    default:
+        throw std::runtime_error("Unexpected Color enum value! Guess you lost the captcha^^");
+    }
+}
+
+const char *getName(ColorMix colorMix) {
+    switch (colorMix) {
+    case ColorMix::None:
+        return getName(Color::None);
+    case ColorMix::RED:
+        return getName(Color::RED);
+    case ColorMix::BROWN:
+        return "Brown";
+    case ColorMix::VIOLET:
+        return "Violet";
+    case ColorMix::ORANGE:
+        return "Orange";
+    case ColorMix::GREEN:
+        return getName(Color::GREEN);
+    case ColorMix::TEAL:
+        return "Teal";
+    case ColorMix::LIGHT_GREEN:
+        return "Light Green";
+    case ColorMix::BLUE:
+        return getName(Color::BLUE);
+    case ColorMix::YELLOW:
+        return getName(Color::YELLOW);
     default:
         throw std::runtime_error("Unexpected ColorMix enum value! Guess you lost the captcha^^");
     }

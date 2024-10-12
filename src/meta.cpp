@@ -184,6 +184,10 @@ StartWire *Meta::getStartWire1() {
     return startWire1;
 }
 
+Color Meta::getSelectedColor() {
+    return selectedColor;
+}
+
 int Wire::getId() {
     return id;
 }

@@ -18,17 +18,62 @@ static void printHeader() {
     std::cout << "You shall not pass!! Well.. unless you can proove, that you are a human." << std::endl;
     setStyle(AnsiStyle::RESET);
     std::cout << "Please fix the wiring, the AI screwed up!" << std::endl;
-    std::cout << "The wire has to get from the entry node (" << WIRE_CHAR << ") to the exit node (" << TERM_CHAR << ")." << std::endl;
+    std::cout << "The wire has to get from the entry node (" << WIRE_CHAR << ") to the exit node (" << TERM_CHAR << ")."
+              << std::endl;
+}
+
+/**
+ * Prints the name in colored form at the current cursor position
+ */
+static void printColorName(Color color) {
+    RGB rgb = getRGB(color);
+    const char *name = getName(color);
+    // set ANSI style and color accordingly
+    setStyle(AnsiStyle::BOLD);
+    setColor(AnsiRgbColorMode::FOREGROUND, rgb.red, rgb.green, rgb.blue);
+    setColor(AnsiRgbColorMode::BACKGROUND, 0, 0, 0);
+    // print name
+    std::cout << name;
+    // reset styles
+    setStyle(AnsiStyle::RESET);
+}
+
+/**
+ * Print a line for the given color
+ */
+static void printWireColor(int absoluteX, int absoluteY, Color color) {
+    moveCursor(absoluteX, absoluteY);
+    std::cout << "[" << static_cast<int>(color) << "] ";
+    printColorName(color);
 }
 
 /**
  * Print the number of action the user (or AI..) can do, until the captcha fails
  */
-static void printActionsLeft(Meta *meta){
-    moveCursor(0, OFFSET_Y);
-    std::cout << "Wire left:";
-    moveCursor(0, OFFSET_Y + 1);
-    std::cout << meta->getActionsLeft() << "m";
+static void printLeftSide(Meta *meta) {
+    int localOffsetX = 0;
+    int localOffsetY = 0;
+
+    moveCursor(localOffsetX, OFFSET_Y + localOffsetY++);
+    std::cout << "Select wire color:";
+
+    for (int i = 0; i < COLOR_COUNT; i++) {
+        printWireColor(localOffsetX, OFFSET_Y + localOffsetY++, static_cast<Color>(i + 1));
+    }
+}
+
+static void printRightSide(Meta *meta) {
+    int localOffsetX = 8;
+    int localOffsetY = 0;
+
+    moveCursor(OFFSET_X + FIELD_DIM_X + localOffsetX, OFFSET_Y + localOffsetY);
+    std::cout << "Wire left: " << meta->getActionsLeft() << "m";
+
+    localOffsetY += 2;
+
+    moveCursor(OFFSET_X + FIELD_DIM_X + localOffsetX, OFFSET_Y + localOffsetY);
+    std::cout << "Selected color: ";
+    printColorName(meta->getSelectedColor());
 }
 
 /**
@@ -70,19 +115,22 @@ static void printGameField(Meta *meta) {
     for (int y = 0; y < FIELD_DIM_Y - 2; y++) {
         moveCursor(OFFSET_X + 1, OFFSET_Y + y + 1);
         for (int x = 0; x < FIELD_DIM_X - 2; x++) {
-            Node * node = meta->getGameFieldNodeAt(x,y);
-            if(node == nullptr){
+            Node *node = meta->getGameFieldNodeAt(x, y);
+            if (node == nullptr) {
                 std::cout << ' ';
-            }else{
+            } else {
                 // get character and color from node
                 unsigned char character = node->getCharacter();
                 RGB characterRGB = node->getCharacterRGB();
+
                 // set ANSI style and color accordingly
                 setStyle(AnsiStyle::BOLD);
                 setColor(AnsiRgbColorMode::FOREGROUND, characterRGB.red, characterRGB.green, characterRGB.blue);
                 setColor(AnsiRgbColorMode::BACKGROUND, 0, 0, 0);
+
                 // print character to screen
                 std::cout << character;
+
                 // reset ANSI codes
                 setColor(AnsiStyle::RESET, AnsiForegroundColor::WHITE, AnsiBackgroundColor::BLACK);
             }
@@ -114,9 +162,10 @@ void printOutput(Meta *meta) {
 
     printHeader();
 
-    printActionsLeft(meta);
+    printLeftSide(meta);
     printBorder();
     printGameField(meta);
+    printRightSide(meta);
 
     printLegend();
 
