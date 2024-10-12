@@ -22,6 +22,16 @@ static void printHeader() {
 }
 
 /**
+ * Print the number of action the user (or AI..) can do, until the captcha fails
+ */
+static void printActionsLeft(Meta *meta){
+    moveCursor(0, OFFSET_Y);
+    std::cout << "Wire left:";
+    moveCursor(0, OFFSET_Y + 1);
+    std::cout << meta->getActionsLeft() << "m";
+}
+
+/**
  * Draw the game field border
  */
 static void printBorder() {
@@ -96,6 +106,7 @@ void printOutput(Meta *meta) {
 
     printHeader();
 
+    printActionsLeft(meta);
     printBorder();
     printGameField(meta);
 

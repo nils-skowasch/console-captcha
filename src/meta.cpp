@@ -55,6 +55,10 @@ int Meta::getCursorY() {
     return cursorY;
 }
 
+int Meta::getActionsLeft() {
+    return actionsLeft;
+}
+
 void Meta::placeWire() {
     if (hasActionsLeft()) {
         gameField[cursorY - 1][cursorX - 1] = WIRE_CHAR;

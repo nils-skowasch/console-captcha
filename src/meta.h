@@ -29,6 +29,7 @@ class Meta {
     void moveCursorRight();
     int getCursorX();
     int getCursorY();
+    int getActionsLeft();
     void placeWire();
     void userWantsToSurrender();
     unsigned char getGameFieldCharAt(int x, int y);
