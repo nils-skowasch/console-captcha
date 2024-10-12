@@ -14,14 +14,21 @@ void WinConditionThread::handleCaptcha() {
             return;
         }
 
-        // follow wireStart0
-        if (!captchaSucceeded) {
-            captchaSucceeded = followWire(meta->getWireStart0());
-        }
+        // follow wireStart0 and wireStart1 to Merger
+        if (followWire(meta->getWireStart0()) && followWire(meta->getWireStart1())) {
+            // merge wire colors
+            Color color0 = meta->getWireStart0()->getWire()->getColor();
+            Color color1 = meta->getWireStart1()->getWire()->getColor();
+            ColorMix merged = merge(color0, color1);
+            if (merged == ColorMix::None) {
+                break; // undefined color combination, assume captcha failed
+            }
 
-        // follow wireStart1
-        if (!captchaSucceeded) {
-            captchaSucceeded = followWire(meta->getWireStart1());
+            // continue following from Merger
+            if (followWire(meta->getMerger())) {
+                captchaSucceeded = true;
+                break;
+            }
         }
 
         // sleep one second
@@ -29,66 +36,126 @@ void WinConditionThread::handleCaptcha() {
     }
 }
 
-bool WinConditionThread::followWire(std::vector<int> *seenWireIds, int lastWireX, int lastWireY, int currentWireX,
-                                    int currentWireY) {
+bool WinConditionThread::followWire(WireStart *wireStart) {
+    std::vector<int> seenWireIds(USER_ACTIONS);
+    return followWire(&seenWireIds, false, wireStart->getX(), wireStart->getY(), wireStart->getX(), wireStart->getY());
+}
+
+bool WinConditionThread::followWire(Merger *merger) {
+    // top
+    {
+        int x = merger->getX();
+        int y = merger->getY() - 1;
+        std::vector<int> seenWireIds(USER_ACTIONS);
+        if (followWire(&seenWireIds, true, x, y, x, y)) {
+            return true;
+        }
+    }
+    // right
+    {
+        int x = merger->getX() + 1;
+        int y = merger->getY();
+        std::vector<int> seenWireIds(USER_ACTIONS);
+        if (followWire(&seenWireIds, true, x, y, x, y)) {
+            return true;
+        }
+    }
+    // bottom
+    {
+        int x = merger->getX();
+        int y = merger->getY() + 1;
+        std::vector<int> seenWireIds(USER_ACTIONS);
+        if (followWire(&seenWireIds, true, x, y, x, y)) {
+            return true;
+        }
+    }
+    // left
+    {
+        int x = merger->getX() - 1;
+        int y = merger->getY();
+        std::vector<int> seenWireIds(USER_ACTIONS);
+        if (followWire(&seenWireIds, true, x, y, x, y)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool WinConditionThread::followWire(std::vector<int> *seenWireIds, bool merged, int lastWireX, int lastWireY,
+                                    int currentWireX, int currentWireY) {
+    // do not continue, if the given x/y coordinates are no valid game field coordinates
+    if (!meta->isInGameFieldDimension(currentWireX, currentWireY)) {
+        return false;
+    }
+
+    // get node from game field
     Node *node = meta->getGameFieldNodeAt(currentWireX, currentWireY);
     if (node == nullptr) {
-        return false; // current position points to an empty game field
+        return false; // current position points to an empty field
     }
 
-    // this one is a wire
-    Wire *currentWire = (Wire *)node;
-    seenWireIds->push_back(currentWire->getId()); // remember current wireId to prevent loops
+    // continue if the current element is a wire
+    if (Wire *currentWire = dynamic_cast<Wire *>(node)) {
+        seenWireIds->push_back(currentWire->getId()); // remember current wireId to prevent loops
 
-    // check top
-    if (followWireNext(seenWireIds, currentWire, currentWireX, currentWireY, currentWireX, currentWireY - 1)) {
-        return true;
-    }
+        // check top
+        if (followWireNext(seenWireIds, merged, currentWire, currentWireX, currentWireY, currentWireX,
+                           currentWireY - 1)) {
+            return true;
+        }
 
-    // check right
-    if (followWireNext(seenWireIds, currentWire, currentWireX, currentWireY, currentWireX + 1, currentWireY)) {
-        return true;
-    }
+        // check right
+        if (followWireNext(seenWireIds, merged, currentWire, currentWireX, currentWireY, currentWireX + 1,
+                           currentWireY)) {
+            return true;
+        }
 
-    // check bottom
-    if (followWireNext(seenWireIds, currentWire, currentWireX, currentWireY, currentWireX, currentWireY + 1)) {
-        return true;
-    }
+        // check bottom
+        if (followWireNext(seenWireIds, merged, currentWire, currentWireX, currentWireY, currentWireX,
+                           currentWireY + 1)) {
+            return true;
+        }
 
-    // check left
-    if (followWireNext(seenWireIds, currentWire, currentWireX, currentWireY, currentWireX - 1, currentWireY)) {
-        return true;
+        // check left
+        if (followWireNext(seenWireIds, merged, currentWire, currentWireX, currentWireY, currentWireX - 1,
+                           currentWireY)) {
+            return true;
+        }
     }
 
     return false; // found nothing, the captcha has not been solved yet
 }
 
-bool WinConditionThread::followWire(WireStart *wireStart) {
-    std::vector<int> seenWireIds(USER_ACTIONS);
-    return followWire(&seenWireIds, wireStart->getX(), wireStart->getY(), wireStart->getX(), wireStart->getY());
-}
-
-bool WinConditionThread::followWireNext(std::vector<int> *seenWireIds, Wire *currentWire, int currentWireX,
+bool WinConditionThread::followWireNext(std::vector<int> *seenWireIds, bool merged, Wire *currentWire, int currentWireX,
                                         int currentWireY, int nextWireX, int nextWireY) {
-    if (nextWireX >= 0 && nextWireX < (FIELD_DIM_X - 2) && nextWireY >= 0 && nextWireY < (FIELD_DIM_Y - 2)) {
+    if (meta->isInGameFieldDimension(nextWireX, nextWireY)) {
         Node *nextNode = meta->getGameFieldNodeAt(nextWireX, nextWireY);
         if (nextNode != nullptr) { // found a node at the next location
-            // check wether the nextNode is the terminus location
-            if (dynamic_cast<Term *>(nextNode)) {
-                return true; // terminus location found
+
+            // check whether the wire reached it's final destination
+            if (merged) {
+                // check whether the nextNode is the terminus location
+                if (dynamic_cast<Term *>(nextNode)) {
+                    return true; // terminus location found
+                }
+            } else {
+                // check whether the nextNode is the merger location
+                if (dynamic_cast<Merger *>(nextNode)) {
+                    return true; // merger location found
+                }
             }
 
             // consider the nextNode being a wire
-            Wire *nextWire = (Wire *)nextNode;
-
-            // do not follow backwards or get trapped in loops
-            if (!isVectorContainsValue(seenWireIds, nextWire->getId())) {
-                // follow only, if the color is not matching
-                if (currentWire->hasMatchingRGB(nextWire->getCharacterRGB())) {
-                    // all fine, follow the wire
-                    return followWire(
-                        seenWireIds, currentWireX, currentWireY, nextWireX,
-                        nextWireY); // follow the wire from here, if this is a dead end, try the other directions
+            if (Wire *nextWire = dynamic_cast<Wire *>(nextNode)) {
+                // do not follow backwards or get trapped in loops
+                if (!isVectorContainsValue(seenWireIds, nextWire->getId())) {
+                    // follow only, if the color is matching
+                    if (currentWire->hasMatchingRGB(nextWire->getCharacterRGB())) {
+                        // all fine, follow the wire
+                        return followWire(
+                            seenWireIds, merged, currentWireX, currentWireY, nextWireX,
+                            nextWireY); // follow the wire from here, if this is a dead end, try the other directions
+                    }
                 }
             }
         }

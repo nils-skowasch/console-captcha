@@ -14,28 +14,17 @@
 #define TERM_CHAR '='
 #define USER_ACTIONS 24
 
-class WireStart {
-  private:
-    int x;
-    int y;
-    int wireId;
-
-  public:
-    WireStart(int x, int y, int wireId);
-    int getX();
-    int getY();
-    int getWireId();
-};
-
 class Node {
   private:
-    Color color;
-    ColorMix colorMix;
     unsigned char character;
+    ColorMix colorMix;
+
+  protected:
+    Color color;
 
   public:
-    Node(Color color, unsigned char character);
-    Node(ColorMix colorMix, unsigned char character);
+    Node(unsigned char character, Color color);
+    Node(unsigned char character, ColorMix colorMix);
     virtual ~Node() = default; // make class polymorphic
     unsigned char getCharacter();
     RGB getCharacterRGB();
@@ -50,6 +39,20 @@ class Wire : public Node {
     Wire(int id, Color color);
     Wire(int id, ColorMix colorMix);
     int getId();
+    Color getColor();
+};
+
+class WireStart {
+  private:
+    int x;
+    int y;
+    Wire *wire;
+
+  public:
+    WireStart(int x, int y, Wire *wire);
+    int getX();
+    int getY();
+    Wire *getWire();
 };
 
 class Merger : public Node {
@@ -83,15 +86,15 @@ class Meta {
     // the two entry wires (heap)
     WireStart *wireStart0 = nullptr;
     WireStart *wireStart1 = nullptr;
+    // merger object
+    Merger *merger = nullptr;
+    // terminus object
+    Term term = Term(ColorMix::None);
     // created wire objects (heap)
     std::vector<Wire *> wires = {};
     // user selects colors
     Color selectedColor = Color::None;
     ColorMix selectedColorMix = ColorMix::None;
-    // merger object
-    Merger *merger = nullptr;
-    // terminus object
-    Term term = Term(ColorMix::None);
     // methods
     void initGameField();
     Wire *createWire(Color color);
@@ -116,10 +119,12 @@ class Meta {
     bool hasUserSurrendered();
     WireStart *getWireStart0();
     WireStart *getWireStart1();
+    Merger *getMerger();
     Color getSelectedColor();
     ColorMix getSelectedColorMix();
     void setSelectedColor(Color color);
     void setSelectedColorMix(ColorMix colorMix);
+    bool isInGameFieldDimension(int x, int y);
 };
 
 #endif

@@ -90,6 +90,80 @@ const char *getName(ColorMix colorMix) {
     }
 }
 
+Color getRandomColor() {
+    int index = (std::rand() % (COLOR_COUNT - 1)) + 1;
+    return static_cast<Color>(index);
+}
+
+ColorMix merge(Color color0, Color color1) {
+    return merge(color0, color1, true);
+}
+
+ColorMix merge(Color color0, Color color1, bool forwards) {
+    switch (color0) {
+    case Color::None:
+        break;
+    case Color::RED:
+        switch (color1) {
+        case Color::None:
+            break;
+        case Color::RED:
+            return ColorMix::RED;
+        case Color::GREEN:
+            return ColorMix::BROWN;
+        case Color::BLUE:
+            return ColorMix::VIOLET;
+        case Color::YELLOW:
+            return ColorMix::ORANGE;
+        }
+        break;
+    case Color::GREEN:
+        switch (color1) {
+        case Color::None:
+        case Color::RED:
+            break;
+        case Color::GREEN:
+            return ColorMix::GREEN;
+        case Color::BLUE:
+            return ColorMix::TEAL;
+        case Color::YELLOW:
+            return ColorMix::LIGHT_GREEN;
+        }
+        break;
+    case Color::BLUE:
+        switch (color1) {
+        case Color::None:
+        case Color::RED:
+        case Color::GREEN:
+            break;
+        case Color::YELLOW:
+            return ColorMix::LIGHT_GREEN;
+        case Color::BLUE:
+            return ColorMix::BLUE;
+        }
+        break;
+    case Color::YELLOW:
+        switch (color1) {
+        case Color::None:
+        case Color::RED:
+        case Color::GREEN:
+            break;
+        case Color::BLUE:
+            return ColorMix::GREEN;
+        case Color::YELLOW:
+            return ColorMix::YELLOW;
+        }
+        break;
+    }
+
+    // nothing found yet
+    if (forwards) {
+        return merge(color1, color0, false); // try to find a match merging backwards
+    } else {
+        return ColorMix::None; // no match found
+    }
+}
+
 unsigned char toChar(Color color) {
     return static_cast<unsigned char>(static_cast<int>(color) + 64); // convert Color index to characters A-D
 }
@@ -104,9 +178,4 @@ Color toColor(unsigned char character) {
         throw std::runtime_error("Unexpected character given!");
     }
     return static_cast<Color>(colorIndex);
-}
-
-Color getRandomColor() {
-    int index = (std::rand() % (COLOR_COUNT - 1)) + 1;
-    return static_cast<Color>(index);
 }

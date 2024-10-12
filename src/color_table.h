@@ -41,9 +41,12 @@ RGB getRGB(ColorMix colorMix);
 const char *getName(Color color);
 const char *getName(ColorMix colorMix);
 
+Color getRandomColor();
+
+ColorMix merge(Color color0, Color color1);
+ColorMix merge(Color color0, Color color1, bool forward);
+
 unsigned char toChar(Color color);
 Color toColor(unsigned char character);
-
-Color getRandomColor();
 
 #endif

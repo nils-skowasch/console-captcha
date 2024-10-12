@@ -6,9 +6,9 @@
 #include <stdexcept>
 #include <typeinfo>
 
-Node::Node(Color color, unsigned char character) : color(color), colorMix(ColorMix::None), character(character){};
+Node::Node(unsigned char character, Color color) : character(character), colorMix(ColorMix::None), color(color){};
 
-Node::Node(ColorMix colorMix, unsigned char character) : color(Color::None), colorMix(colorMix), character(character) {
+Node::Node(unsigned char character, ColorMix colorMix) : character(character), colorMix(colorMix), color(Color::None) {
 }
 
 unsigned char Node::getCharacter() {
@@ -26,16 +26,24 @@ bool Node::hasMatchingRGB(RGB rgb) {
     return rgb.equals(getRGB(color)) || rgb.equals(getRGB(colorMix));
 }
 
-Wire::Wire(int id, Color color) : Node(color, WIRE_CHAR), id(id){};
+Wire::Wire(int id, Color color) : Node(WIRE_CHAR, color), id(id){};
 
-Wire::Wire(int id, ColorMix colorMix) : Node(colorMix, WIRE_CHAR), id(id){};
+Wire::Wire(int id, ColorMix colorMix) : Node(WIRE_CHAR, colorMix), id(id){};
 
-Merger::Merger(int x, int y) : Node(Color::None, '+'), x(x), y(y) {
+Merger::Merger(int x, int y) : Node('+', Color::None), x(x), y(y) {
 }
 
-Term::Term(ColorMix colorMix) : Node(colorMix, TERM_CHAR){};
+int Merger::getX() {
+    return x;
+}
 
-WireStart::WireStart(int x, int y, int wireId) : x(x), y(y), wireId(wireId) {
+int Merger::getY() {
+    return y;
+}
+
+Term::Term(ColorMix colorMix) : Node(TERM_CHAR, colorMix){};
+
+WireStart::WireStart(int x, int y, Wire *wire) : x(x), y(y), wire(wire) {
 }
 
 int WireStart::getX() {
@@ -46,8 +54,8 @@ int WireStart::getY() {
     return y;
 }
 
-int WireStart::getWireId() {
-    return wireId;
+Wire *WireStart::getWire() {
+    return wire;
 }
 
 void Meta::initGameField() {
@@ -63,7 +71,7 @@ void Meta::initGameField() {
     // place randomized start wire 0
     int startY0 = std::rand() % (FIELD_DIM_Y - 2);
     Wire *wire = createWire(getRandomColor());
-    wireStart0 = new WireStart(0, startY0, wire->getId());
+    wireStart0 = new WireStart(0, startY0, wire);
     gameField[startY0][0] = wire;
 
     // place randomized start wire 1
@@ -72,7 +80,7 @@ void Meta::initGameField() {
         startY1 = std::rand() % (FIELD_DIM_Y - 2);
     }
     wire = createWire(getRandomColor());
-    wireStart1 = new WireStart(0, startY1, wire->getId());
+    wireStart1 = new WireStart(0, startY1, wire);
     gameField[startY1][0] = wire;
 
     // place randomized merger
@@ -222,6 +230,10 @@ WireStart *Meta::getWireStart1() {
     return wireStart1;
 }
 
+Merger *Meta::getMerger() {
+    return merger;
+}
+
 Color Meta::getSelectedColor() {
     return selectedColor;
 }
@@ -240,6 +252,14 @@ void Meta::setSelectedColorMix(ColorMix colorMix) {
     selectedColorMix = colorMix;
 }
 
+bool Meta::isInGameFieldDimension(int x, int y) {
+    return x >= 0 && x < (FIELD_DIM_X - 2) && y >= 0 && y < (FIELD_DIM_Y - 2);
+}
+
 int Wire::getId() {
     return id;
+}
+
+Color Wire::getColor() {
+    return color;
 }
