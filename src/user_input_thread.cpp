@@ -58,6 +58,9 @@ void UserInputThread::readFromStdin() {
                 read(STDIN_FILENO, &buffer, 1); // wait for the user final key event ('press any key')
             } else if (buffer == ' ') {
                 meta->placeWire();
+            } else if(buffer == '1' || buffer == '2' || buffer == '3' || buffer == '4'){
+                int colorIndex = buffer - '0';
+                meta->setSelectedColor(static_cast<Color>(colorIndex));
             } else if (buffer == 27) { // ansi escape char
                 escape_mode = true;
             } else if (escape_mode && buffer == 91) {

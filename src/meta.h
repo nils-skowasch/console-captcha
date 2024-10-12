@@ -96,6 +96,7 @@ class Meta {
     StartWire* getStartWire0();
     StartWire* getStartWire1();
     Color getSelectedColor();
+    void setSelectedColor(Color color);
 };
 
 #endif

@@ -188,6 +188,10 @@ Color Meta::getSelectedColor() {
     return selectedColor;
 }
 
+void Meta::setSelectedColor(Color color) {
+    selectedColor = color;
+}
+
 int Wire::getId() {
     return id;
 }
