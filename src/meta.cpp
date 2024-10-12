@@ -84,8 +84,8 @@ void Meta::initGameField() {
     gameField[startY1][0] = wire;
 
     // place randomized merger
-    int mergerX = (std::rand() % 4) + (FIELD_DIM_X / 2) - 2;
-    int mergerY = (std::rand() % 4) + (FIELD_DIM_Y / 2) - 2;
+    int mergerX = (std::rand() % 4) + (FIELD_DIM_X / 4);
+    int mergerY = (std::rand() % 2) + (FIELD_DIM_Y / 4);
     merger = new Merger(mergerX, mergerY);
     gameField[mergerY][mergerX] = merger;
 
@@ -178,7 +178,8 @@ void Meta::placeWire() {
         int fieldX = cursorX - 1;
         int fieldY = cursorY - 1;
         Node *node = gameField[fieldY][fieldX];
-        if (node == nullptr || !dynamic_cast<Merger *>(node)) { // the field must be empty or not contain a Merger!
+        if (node == nullptr || (!dynamic_cast<Merger *>(node) &&
+                                !dynamic_cast<Term *>(node))) { // the field must be empty or neither contain a Merger nor Terminus!
             if (selectedColorMix != ColorMix::None) {
                 gameField[fieldY][fieldX] = createWire(selectedColorMix);
             } else {

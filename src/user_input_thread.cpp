@@ -46,10 +46,6 @@ UserInputThread::~UserInputThread() {
     enableCanonicalMode();
 }
 
-bool UserInputThread::isColorChar(unsigned char character) {
-    return character >= 'A' && character <= 'D';
-}
-
 void UserInputThread::readFromStdin() {
     bool escape_mode = false; // used to switch into "ansi-escape-char-parsing-mode" ;)
 

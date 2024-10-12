@@ -91,7 +91,7 @@ const char *getName(ColorMix colorMix) {
 }
 
 Color getRandomColor() {
-    int index = (std::rand() % (COLOR_COUNT - 1)) + 1;
+    int index = (std::rand() % COLOR_COUNT) + 1;
     return static_cast<Color>(index);
 }
 
