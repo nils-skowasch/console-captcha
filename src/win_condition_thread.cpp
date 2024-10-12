@@ -41,22 +41,22 @@ bool WinConditionThread::followWire(std::vector<int> *seenWireIds, int lastWireX
     seenWireIds->push_back(currentWire->getId()); // remember current wireId to prevent loops
 
     // check top
-    if (followWireNext(seenWireIds, currentWireX, currentWireY, currentWireX, currentWireY - 1)) {
+    if (followWireNext(seenWireIds, currentWire, currentWireX, currentWireY, currentWireX, currentWireY - 1)) {
         return true;
     }
 
     // check right
-    if (followWireNext(seenWireIds, currentWireX, currentWireY, currentWireX + 1, currentWireY)) {
+    if (followWireNext(seenWireIds, currentWire, currentWireX, currentWireY, currentWireX + 1, currentWireY)) {
         return true;
     }
 
     // check bottom
-    if (followWireNext(seenWireIds, currentWireX, currentWireY, currentWireX, currentWireY + 1)) {
+    if (followWireNext(seenWireIds, currentWire, currentWireX, currentWireY, currentWireX, currentWireY + 1)) {
         return true;
     }
 
     // check left
-    if (followWireNext(seenWireIds, currentWireX, currentWireY, currentWireX - 1, currentWireY)) {
+    if (followWireNext(seenWireIds, currentWire, currentWireX, currentWireY, currentWireX - 1, currentWireY)) {
         return true;
     }
 
@@ -68,8 +68,8 @@ bool WinConditionThread::followWire(StartWire *startWire) {
     return followWire(&seenWireIds, startWire->getX(), startWire->getY(), startWire->getX(), startWire->getY());
 }
 
-bool WinConditionThread::followWireNext(std::vector<int> *seenWireIds, int currentWireX, int currentWireY,
-                                        int nextWireX, int nextWireY) {
+bool WinConditionThread::followWireNext(std::vector<int> *seenWireIds, Wire *currentWire, int currentWireX,
+                                        int currentWireY, int nextWireX, int nextWireY) {
     if (nextWireX >= 0 && nextWireX < (FIELD_DIM_X - 2) && nextWireY >= 0 && nextWireY < (FIELD_DIM_Y - 2)) {
         Node *nextNode = meta->getGameFieldNodeAt(nextWireX, nextWireY);
         if (nextNode != nullptr) { // found a node at the next location
@@ -80,11 +80,16 @@ bool WinConditionThread::followWireNext(std::vector<int> *seenWireIds, int curre
 
             // consider the nextNode being a wire
             Wire *nextWire = (Wire *)nextNode;
-            if (!isVectorContainsValue(seenWireIds,
-                                       nextWire->getId())) { // do not follow backwards or get trapped in loops
-                return followWire(
-                    seenWireIds, currentWireX, currentWireY, nextWireX,
-                    nextWireY); // follow the wire from here, if this is a dead end, try the other directions
+
+            // do not follow backwards or get trapped in loops
+            if (!isVectorContainsValue(seenWireIds, nextWire->getId())) {
+                // follow only, if the color is not matching
+                if (currentWire->hasMatchingRGB(nextWire->getCharacterRGB())) {
+                    // all fine, follow the wire
+                    return followWire(
+                        seenWireIds, currentWireX, currentWireY, nextWireX,
+                        nextWireY); // follow the wire from here, if this is a dead end, try the other directions
+                }
             }
         }
     }

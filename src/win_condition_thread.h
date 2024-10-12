@@ -14,7 +14,7 @@ class WinConditionThread {
     void handleCaptcha();
     bool followWire(std::vector<int> *seenWireIds, int lastWireX, int lastWireY, int currentWireX, int currentWireY);
     bool followWire(StartWire *startWire);
-    bool followWireNext(std::vector<int> *seenWireIds, int currentWireX, int currentWireY, int nextWireX, int nextWireY);
+    bool followWireNext(std::vector<int> *seenWireIds, Wire *currentWire, int currentWireX, int currentWireY, int nextWireX, int nextWireY);
 
   public:
     WinConditionThread();

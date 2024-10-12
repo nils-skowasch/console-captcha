@@ -24,7 +24,7 @@ RGB getRGB(ColorMix colorMix) {
     case ColorMix::None:
         return getRGB(Color::None);
     case ColorMix::RED:
-        return getRGB(Color::RED);
+        return {128, 0, 0};
     case ColorMix::BROWN:
         return {61, 40, 0};
     case ColorMix::VIOLET:
@@ -32,13 +32,13 @@ RGB getRGB(ColorMix colorMix) {
     case ColorMix::ORANGE:
         return {100, 56, 9};
     case ColorMix::GREEN:
-        return getRGB(Color::GREEN);
+        return {0, 128, 0};
     case ColorMix::TEAL:
         return {20, 50, 33};
     case ColorMix::LIGHT_GREEN:
         return {7, 100, 13};
     case ColorMix::BLUE:
-        return getRGB(Color::BLUE);
+        return {0, 0, 128};
     case ColorMix::YELLOW:
         return getRGB(Color::YELLOW);
     default:

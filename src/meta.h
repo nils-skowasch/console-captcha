@@ -26,6 +26,7 @@ class Node {
     virtual ~Node() = default; // make class polymorphic
     unsigned char getCharacter();
     RGB getCharacterRGB();
+    bool hasMatchingRGB(RGB rgb);
 };
 
 class Wire : public Node {

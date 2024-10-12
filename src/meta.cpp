@@ -20,7 +20,11 @@ RGB Node::getCharacterRGB() {
         return getRGB(color);
     }
     return getRGB(colorMix);
-};
+}
+
+bool Node::hasMatchingRGB(RGB rgb) {
+    return rgb.equals(getRGB(color)) || rgb.equals(getRGB(colorMix));
+}
 
 Wire::Wire(int id, Color color) : Node(color, WIRE_CHAR), id(id){};
 
@@ -30,12 +34,15 @@ Term::Term(ColorMix colorMix) : Node(colorMix, TERM_CHAR){};
 
 StartWire::StartWire(int x, int y, int wireId) : x(x), y(y), wireId(wireId) {
 }
+
 int StartWire::getX() {
     return x;
 }
+
 int StartWire::getY() {
     return y;
 }
+
 int StartWire::getWireId() {
     return wireId;
 }
@@ -80,7 +87,6 @@ Wire *Meta::createWire(Color color) {
 }
 
 Meta::Meta() {
-    // initialize game field
     initGameField();
 }
 

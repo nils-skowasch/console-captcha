@@ -13,6 +13,11 @@ struct RGB {
     int red;
     int green;
     int blue;
+
+  public:
+    bool equals(RGB other) {
+        return red == other.red && green == other.green && blue == other.blue;
+    }
 };
 
 enum class Color { None, RED, GREEN, BLUE, YELLOW };
@@ -33,8 +38,8 @@ enum class ColorMix {
 RGB getRGB(Color color);
 RGB getRGB(ColorMix colorMix);
 
-const char* getName(Color color);
-const char* getName(ColorMix colorMix);
+const char *getName(Color color);
+const char *getName(ColorMix colorMix);
 
 unsigned char toChar(Color color);
 Color toColor(unsigned char character);
