@@ -19,7 +19,7 @@ class Meta {
     int cursorY = 5;
     unsigned char gameField[FIELD_DIM_Y - 2][FIELD_DIM_X - 2];
     void initGameField();
-    int actionsLeft = 16;
+    int actionsLeft = 16; // is not enough, if the start and end points are too far away ... but some real world captcha's are not solveable either ;)
 
   public:
     Meta();

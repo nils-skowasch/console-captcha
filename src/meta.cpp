@@ -1,5 +1,7 @@
 #include "meta.h"
 #include "console_output.h"
+#include <cstdlib>
+#include <ctime>
 
 void Meta::initGameField() {
     for (int y = 0; y < FIELD_DIM_Y - 2; y++) {
@@ -7,8 +9,14 @@ void Meta::initGameField() {
             gameField[y][x] = ' ';
         }
     }
-    gameField[3][0] = WIRE_CHAR;
-    gameField[1][FIELD_DIM_X - 3] = TERM_CHAR;
+    // apply a seed to randomizer
+    std::srand(static_cast<unsigned int>(std::time(0)));    
+    // place randomized start wire
+    int startY = std::rand() % (FIELD_DIM_Y - 2);
+    gameField[startY][0] = WIRE_CHAR;
+    // place randomized end node
+    int endY = std::rand() % (FIELD_DIM_Y - 2);
+    gameField[endY][FIELD_DIM_X - 3] = TERM_CHAR;
 }
 
 Meta::Meta() : continueExecution(true), userSurrendered(false) {
