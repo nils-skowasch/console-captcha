@@ -1,5 +1,10 @@
 #include "win_condition_thread.h"
+#include <algorithm>
 #include <chrono>
+
+static bool isVectorContainsValue(std::vector<int> *v, int value) {
+    return std::find(v->begin(), v->end(), value) != v->end();
+}
 
 void WinConditionThread::handleCaptcha() {
     while (meta->isContinueExecution()) {
@@ -9,20 +14,14 @@ void WinConditionThread::handleCaptcha() {
             return;
         }
 
-        // handle captcha succeeded state
-        int wireX = -1, wireY = -1;
-        // find wire start
-        for (int y = 0; y < FIELD_DIM_Y - 2; y++) {
-            if (meta->getGameFieldCharAt(0, y) == WIRE_CHAR) {
-                wireX = 0;
-                wireY = y;
-                break;
-            }
+        // follow startWire0
+        if (!captchaSucceeded) {
+            captchaSucceeded = followWire(meta->getStartWire0());
         }
 
-        // follow the wire
-        if (wireX != -1) {
-            captchaSucceeded = followWire(wireX, wireY, wireX, wireY);
+        // follow startWire1
+        if (!captchaSucceeded) {
+            captchaSucceeded = followWire(meta->getStartWire1());
         }
 
         // sleep one second
@@ -30,60 +29,66 @@ void WinConditionThread::handleCaptcha() {
     }
 }
 
-bool WinConditionThread::followWire(int lastWireX, int lastWireY, int currentWireX, int currentWireY) {
-    // check terminus destination reached
-    if (meta->getGameFieldCharAt(currentWireX, currentWireY) == TERM_CHAR) {
+bool WinConditionThread::followWire(std::vector<int> *seenWireIds, int lastWireX, int lastWireY, int currentWireX,
+                                    int currentWireY) {
+    Node *node = meta->getGameFieldNodeAt(currentWireX, currentWireY);
+    if (node == nullptr) {
+        return false; // current position points to an empty game field
+    }
+
+    // this one is a wire
+    Wire *currentWire = (Wire *)node;
+    seenWireIds->push_back(currentWire->getId()); // remember current wireId to prevent loops
+
+    // check top
+    if (followWireNext(seenWireIds, currentWireX, currentWireY, currentWireX, currentWireY - 1)) {
         return true;
     }
 
-    int nextWireX, nextWireY;
-    unsigned char nextChar;
-
-    // check top
-    nextWireX = currentWireX;
-    nextWireY = currentWireY - 1;
-    if (nextWireX != lastWireX || nextWireY != lastWireY) { // do not follow backwards
-        nextChar = meta->getGameFieldCharAt(nextWireX, nextWireY);
-        if (nextChar == WIRE_CHAR || nextChar == TERM_CHAR) {
-            return followWire(currentWireX, currentWireY, nextWireX,
-                              nextWireY); // found the next wire part on the top side
-        }
-    }
-
     // check right
-    nextWireX = currentWireX + 1;
-    nextWireY = currentWireY;
-    if (nextWireX != lastWireX || nextWireY != lastWireY) { // do not follow backwards
-        nextChar = meta->getGameFieldCharAt(nextWireX, nextWireY);
-        if (nextChar == WIRE_CHAR || nextChar == TERM_CHAR) {
-            return followWire(currentWireX, currentWireY, nextWireX,
-                              nextWireY); // found the next wire part on the right side
-        }
+    if (followWireNext(seenWireIds, currentWireX, currentWireY, currentWireX + 1, currentWireY)) {
+        return true;
     }
 
     // check bottom
-    nextWireX = currentWireX;
-    nextWireY = currentWireY + 1;
-    if (nextWireX != lastWireX || nextWireY != lastWireY) { // do not follow backwards
-        nextChar = meta->getGameFieldCharAt(nextWireX, nextWireY);
-        if (nextChar == WIRE_CHAR || nextChar == TERM_CHAR) {
-            return followWire(currentWireX, currentWireY, nextWireX,
-                              nextWireY); // found the next wire part on the bottom side
-        }
+    if (followWireNext(seenWireIds, currentWireX, currentWireY, currentWireX, currentWireY + 1)) {
+        return true;
     }
 
     // check left
-    nextWireX = currentWireX - 1;
-    nextWireY = currentWireY;
-    if (nextWireX != lastWireX || nextWireY != lastWireY) { // do not follow backwards
-        nextChar = meta->getGameFieldCharAt(nextWireX, nextWireY);
-        if (nextChar == WIRE_CHAR || nextChar == TERM_CHAR) {
-            return followWire(currentWireX, currentWireY, nextWireX,
-                              nextWireY); // found the next wire part on the left side
-        }
+    if (followWireNext(seenWireIds, currentWireX, currentWireY, currentWireX - 1, currentWireY)) {
+        return true;
     }
 
     return false; // found nothing, the captcha has not been solved yet
+}
+
+bool WinConditionThread::followWire(StartWire *startWire) {
+    std::vector<int> seenWireIds(USER_ACTIONS);
+    return followWire(&seenWireIds, startWire->getX(), startWire->getY(), startWire->getX(), startWire->getY());
+}
+
+bool WinConditionThread::followWireNext(std::vector<int> *seenWireIds, int currentWireX, int currentWireY,
+                                        int nextWireX, int nextWireY) {
+    if (nextWireX >= 0 && nextWireX < (FIELD_DIM_X - 2) && nextWireY >= 0 && nextWireY < (FIELD_DIM_Y - 2)) {
+        Node *nextNode = meta->getGameFieldNodeAt(nextWireX, nextWireY);
+        if (nextNode != nullptr) { // found a node at the next location
+            // check wether the nextNode is the terminus location
+            if (dynamic_cast<Term *>(nextNode)) {
+                return true; // terminus location found
+            }
+
+            // consider the nextNode being a wire
+            Wire *nextWire = (Wire *)nextNode;
+            if (!isVectorContainsValue(seenWireIds,
+                                       nextWire->getId())) { // do not follow backwards or get trapped in loops
+                return followWire(
+                    seenWireIds, currentWireX, currentWireY, nextWireX,
+                    nextWireY); // follow the wire from here, if this is a dead end, try the other directions
+            }
+        }
+    }
+    return false;
 }
 
 WinConditionThread::WinConditionThread() : winConditionThread(nullptr), meta(nullptr) {

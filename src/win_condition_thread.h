@@ -3,6 +3,7 @@
 
 #include "meta.h"
 #include <thread>
+#include <vector>
 
 class WinConditionThread {
   private:
@@ -11,7 +12,9 @@ class WinConditionThread {
     bool captchaSucceeded = false;
     bool captchaFailed = false;
     void handleCaptcha();
-    bool followWire(int lastWireX, int lastWireY, int currentWireX, int currentWireY);
+    bool followWire(std::vector<int> *seenWireIds, int lastWireX, int lastWireY, int currentWireX, int currentWireY);
+    bool followWire(StartWire *startWire);
+    bool followWireNext(std::vector<int> *seenWireIds, int currentWireX, int currentWireY, int nextWireX, int nextWireY);
 
   public:
     WinConditionThread();

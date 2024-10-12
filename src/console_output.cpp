@@ -70,13 +70,21 @@ static void printGameField(Meta *meta) {
     for (int y = 0; y < FIELD_DIM_Y - 2; y++) {
         moveCursor(OFFSET_X + 1, OFFSET_Y + y + 1);
         for (int x = 0; x < FIELD_DIM_X - 2; x++) {
-            unsigned char c = meta->getGameFieldCharAt(x, y);
-            if (c == WIRE_CHAR || c == TERM_CHAR) {
-                setColor(AnsiStyle::BOLD, AnsiForegroundColor::BLUE, AnsiBackgroundColor::BLACK);
-                std::cout << c;
+            Node * node = meta->getGameFieldNodeAt(x,y);
+            if(node == nullptr){
+                std::cout << ' ';
+            }else{
+                // get character and color from node
+                unsigned char character = node->getCharacter();
+                RGB characterRGB = node->getCharacterRGB();
+                // set ANSI style and color accordingly
+                setStyle(AnsiStyle::BOLD);
+                setColor(AnsiRgbColorMode::FOREGROUND, characterRGB.red, characterRGB.green, characterRGB.blue);
+                setColor(AnsiRgbColorMode::BACKGROUND, 0, 0, 0);
+                // print character to screen
+                std::cout << character;
+                // reset ANSI codes
                 setColor(AnsiStyle::RESET, AnsiForegroundColor::WHITE, AnsiBackgroundColor::BLACK);
-            } else {
-                std::cout << c;
             }
         }
     }
