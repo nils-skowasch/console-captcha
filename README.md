@@ -6,7 +6,7 @@ It brings the well-loved Captcha requests to the Terminal world. The program is 
 
 ![console-captcha.gif](./doc/console-captcha.gif)
 
-For a precompiled version, see the [Releases](releases) section of this repository.
+For a precompiled version, see the [Releases](https://github.com/nils-skowasch/console-captcha/releases) section of this repository.
 
 ## Compile on Linux
 
