@@ -6,7 +6,7 @@ void moveCursor(int absoluteX, int absoluteY) {
 }
 
 void hideCursor() {
-    std::cout << ANSI_ESCAPE << "?25l]"; // ?25l = hide cursor
+    std::cout << ANSI_ESCAPE << "?25l"; // ?25l = hide cursor
 }
 
 void showCursor() {

@@ -2,8 +2,8 @@
 #include <iostream>
 #include <thread>
 
-#include "ansi_codes.cpp"
 #include "../obj/meta.h"
+#include "ansi_codes.cpp"
 
 static bool flip = true;
 
@@ -17,8 +17,8 @@ static void printHeader() {
     std::cout << "You shall not pass!! Well.. unless you can proove, that you are a human." << std::endl;
     setStyle(AnsiStyle::RESET);
     std::cout << "Please fix the wiring, the AI screwed up!" << std::endl;
-    std::cout << "The wires have to get from the entry nodes (" << WIRE_CHAR << ") to the Merger (" << MERGER_CHAR << ") and then to the exit node (" << TERM_CHAR << ")."
-              << std::endl;
+    std::cout << "The wires have to get from the entry nodes (" << WIRE_CHAR << ") to the Merger (" << MERGER_CHAR
+              << ") and then to the exit node (" << TERM_CHAR << ")." << std::endl;
 }
 
 /**
@@ -76,22 +76,26 @@ static void printWireColor(int absoluteX, int absoluteY, ColorMix color) {
 /**
  * Print the number of action the user (or AI..) can do, until the captcha fails
  */
-static void printLeftSide(Meta *meta) {
+static void printLeftSide(Meta *meta, bool printColors) {
     int localOffsetX = 0;
     int localOffsetY = 0;
 
     // print base colors
-    moveCursor(localOffsetX, OFFSET_Y + localOffsetY++);
-    std::cout << "Select base wire color:";
-    for (int i = 0; i < COLOR_COUNT; i++) {
-        printWireColor(localOffsetX, OFFSET_Y + localOffsetY++, static_cast<Color>(i + 1));
+    if (printColors) {
+        moveCursor(localOffsetX, OFFSET_Y + localOffsetY++);
+        std::cout << "Select base wire color:";
+        for (int i = 0; i < COLOR_COUNT; i++) {
+            printWireColor(localOffsetX, OFFSET_Y + localOffsetY++, static_cast<Color>(i + 1));
+        }
+    } else {
+        localOffsetY += COLOR_COUNT + 1;
     }
 
     localOffsetY++;
 
     // print remaining wires
     moveCursor(localOffsetX, OFFSET_Y + localOffsetY++);
-    std::cout << "Wire left: "; 
+    std::cout << "Wire left:      ";
     setColor(AnsiStyle::BOLD, AnsiForegroundColor::WHITE, AnsiBackgroundColor::BLACK);
     std::cout << meta->getActionsLeft() << "m";
     setStyle(AnsiStyle::RESET);
@@ -102,7 +106,10 @@ static void printLeftSide(Meta *meta) {
     ColorMix colorMix = meta->getSelectedColorMix();
     if (colorMix != ColorMix::None) {
         printColorName(colorMix);
-        std::cout << " (mix)";
+        if (colorMix == ColorMix::RED || colorMix == ColorMix::GREEN || colorMix == ColorMix::BLUE ||
+            colorMix == ColorMix::YELLOW) {
+            std::cout << " (mix)";
+        }
     } else {
         printColorName(meta->getSelectedColor());
     }
@@ -202,18 +209,26 @@ static void printLegend() {
 /**
  * Print the complete output
  */
-void printOutput(Meta *meta) {
+void printOutput(Meta *meta, bool refreshAll) {
     hideCursor();
-    clearConsole();
 
-    printHeader();
+    if (refreshAll) {
+        clearConsole();
+        printHeader();
+    }
 
-    printLeftSide(meta);
-    printBorder();
+    printLeftSide(meta, refreshAll);
+
+    if (refreshAll) {
+        printBorder();
+    }
+
     printGameField(meta);
-    printRightSide(meta);
 
-    printLegend();
+    if (refreshAll) {
+        printRightSide(meta);
+        printLegend();
+    }
 
     if (flip) {
         printCursor(meta);

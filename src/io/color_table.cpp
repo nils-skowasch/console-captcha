@@ -13,7 +13,7 @@ RGB getRGB(Color color) {
     case Color::BLUE:
         return {0, 0, 255};
     case Color::YELLOW:
-        return {100, 95, 5};
+        return {238, 225, 12};
     default:
         throw std::runtime_error("Unexpected Color enum value! Guess you lost the captcha^^");
     }
@@ -40,7 +40,7 @@ RGB getRGB(ColorMix colorMix) {
     case ColorMix::BLUE:
         return {0, 0, 128};
     case ColorMix::YELLOW:
-        return getRGB(Color::YELLOW);
+        return {135, 128, 7};
     default:
         throw std::runtime_error("Unexpected ColorMix enum value! Guess you lost the captcha^^");
     }

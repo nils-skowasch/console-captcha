@@ -77,6 +77,7 @@ class Meta {
     // threading
     std::atomic<bool> continueExecution = true;
     std::atomic<bool> userSurrendered = false;
+    std::atomic<bool> stdoutRefreshAll = true;
     // cursor
     int cursorX = 5;
     int cursorY = 5;
@@ -126,6 +127,8 @@ class Meta {
     void setSelectedColor(Color color);
     void setSelectedColorMix(ColorMix colorMix);
     bool isInGameFieldDimension(int x, int y);
+    bool isStdoutRefreshAll();
+    void setStdoutRefreshAll(bool stdoutRefreshAll);
 };
 
 #endif

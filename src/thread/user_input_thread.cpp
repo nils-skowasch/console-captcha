@@ -58,12 +58,15 @@ void UserInputThread::readFromStdin() {
                 read(STDIN_FILENO, &buffer, 1); // wait for the user final key event ('press any key')
             } else if (buffer == ' ') {
                 meta->placeWire(); // place wire with SPACE key
+                meta->setStdoutRefreshAll(true);
             } else if (!escape_mode && ((buffer >= COLOR_CHAR_START_UPPER && buffer <= COLOR_CHAR_END_UPPER) ||
                                         (buffer >= COLOR_CHAR_START_LOWER && buffer <= COLOR_CHAR_END_LOWER))) {
                 meta->setSelectedColor(toColor(buffer)); // A-Da-d: select base color
+                meta->setStdoutRefreshAll(true);
             } else if (buffer >= '1' && buffer <= '9') {
                 int colorIndex = buffer - '0'; // 1-9: select mix color
                 meta->setSelectedColorMix(static_cast<ColorMix>(colorIndex));
+                meta->setStdoutRefreshAll(true);
             } else if (buffer == 27) { // ESC: ansi escape char
                 escape_mode = true;
             } else if (escape_mode && buffer == 91) { // [: continue parsing the ansi escaped char

@@ -257,6 +257,14 @@ bool Meta::isInGameFieldDimension(int x, int y) {
     return x >= 0 && x < (FIELD_DIM_X - 2) && y >= 0 && y < (FIELD_DIM_Y - 2);
 }
 
+bool Meta::isStdoutRefreshAll() {
+    return stdoutRefreshAll;
+}
+
+void Meta::setStdoutRefreshAll(bool stdoutRefreshAll) {
+    this->stdoutRefreshAll = stdoutRefreshAll;
+}
+
 int Wire::getId() {
     return id;
 }

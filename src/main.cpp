@@ -28,18 +28,26 @@ int main() {
     winConditionThread.startThread(&meta);
 
     // continue, until user quits
+    int frames = 0;
     while (meta.isContinueExecution()) {
         // check captcha win or failed condition reached
         if (winConditionThread.hasSucceededCaptcha()) {
             meta.stopExecution();
-            printResultMessage("!! You seem to be a human, congratulations :D !!", "Would you be so kindly, and press any key to exit?");
+            printResultMessage("!! You seem to be a human, congratulations :D !!",
+                               "Would you be so kindly, and press any key to exit?");
             exitCode = 0;
         } else if (winConditionThread.hasFailedCaptcha()) {
             meta.stopExecution();
             printResultMessage("!! Go away, stinky AI :[ !!", "I guess you will bruteforce yourself out anyway ...");
         } else {
             // print all captcha output to console
-            printOutput(&meta);
+            printOutput(&meta, meta.isStdoutRefreshAll());
+            
+            // refresh all only once a second
+            meta.setStdoutRefreshAll(++frames % REFRESH_RATE_HZ == 0);
+            if (meta.isStdoutRefreshAll()) {
+                frames = 0;
+            }
 
             // sleep a bit
             std::this_thread::sleep_for(std::chrono::milliseconds(1000 / REFRESH_RATE_HZ));
