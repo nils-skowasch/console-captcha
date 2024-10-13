@@ -2,7 +2,7 @@
 CC = g++
 
 # Windows cross-compiler
-WIN_CC = x86_64-w64-mingw32-g++
+WIN_CC = g++
 
 # Compiler flags
 CFLAGS = -Wall -g
@@ -10,6 +10,7 @@ CFLAGS = -Wall -g
 # Directories
 SRC_DIR = src
 TARGET_DIR = target
+CYGWIN_DIR = /cygdrive/c/cygwin64/bin
 
 # Target executables
 LINUX_TARGET = $(TARGET_DIR)/console-captcha
@@ -36,7 +37,7 @@ $(TARGET_DIR)/%.o: $(SRC_DIR)/%.cpp
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Target to cross-compile for Windows
-win: $(WIN_TARGET)
+win: $(WIN_TARGET) win-copy-dll 
 
 # Rule to build the executable for Windows
 $(WIN_TARGET): $(WIN_OBJS)
@@ -47,6 +48,12 @@ $(WIN_TARGET): $(WIN_OBJS)
 $(TARGET_DIR)/%.win.o: $(SRC_DIR)/%.cpp
 	@mkdir -p $(TARGET_DIR)
 	$(WIN_CC) $(CFLAGS) -c $< -o $@
+
+# Copy required cygwin-dlls
+win-copy-dll:
+	cp $(CYGWIN_DIR)/cygwin1.dll $(TARGET_DIR)
+	cp $(CYGWIN_DIR)/cygstdc++-6.dll $(TARGET_DIR)
+	cp $(CYGWIN_DIR)/cyggcc_s-seh-1.dll $(TARGET_DIR)
 
 # Clean up compiled files
 clean:
