@@ -91,7 +91,10 @@ static void printLeftSide(Meta *meta) {
 
     // print remaining wires
     moveCursor(localOffsetX, OFFSET_Y + localOffsetY++);
-    std::cout << "Wire left: " << meta->getActionsLeft() << "m";
+    std::cout << "Wire left: "; 
+    setColor(AnsiStyle::BOLD, AnsiForegroundColor::WHITE, AnsiBackgroundColor::BLACK);
+    std::cout << meta->getActionsLeft() << "m";
+    setStyle(AnsiStyle::RESET);
 
     // print selected color (or mix)
     moveCursor(localOffsetX, OFFSET_Y + localOffsetY++);
@@ -123,7 +126,7 @@ static void printRightSide(Meta *meta) {
 static void printBorder() {
     setStyle(AnsiStyle::BOLD);
     setColor(AnsiRgbColorMode::BACKGROUND, 80, 80, 80);
-    setColor(AnsiRgbColorMode::FOREGROUND, 0, 0, 0);
+    setColor(AnsiRgbColorMode::FOREGROUND, 255, 255, 255);
     for (int y = 0; y < FIELD_DIM_Y; y++) {
         moveCursor(OFFSET_X, OFFSET_Y + y);
         for (int x = 0; x < FIELD_DIM_X; x++) {
@@ -145,7 +148,9 @@ static void printBorder() {
  */
 static void printCursor(Meta *meta) {
     moveCursor(OFFSET_X + meta->getCursorX(), OFFSET_Y + meta->getCursorY());
-    std::cout << "X" << std::flush;
+    setColor(AnsiStyle::BOLD, AnsiForegroundColor::WHITE, AnsiBackgroundColor::BLACK);
+    std::cout << CURSOR_CHAR << std::flush;
+    setStyle(AnsiStyle::RESET);
 }
 
 /**

@@ -5,7 +5,7 @@
 RGB getRGB(Color color) {
     switch (color) {
     case Color::None:
-        return {42, 42, 42};
+        return {200, 200, 200};
     case Color::RED:
         return {255, 0, 0};
     case Color::GREEN:

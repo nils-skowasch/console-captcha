@@ -13,6 +13,9 @@ static void printResultMessage(const char *message0, const char *message1) {
 }
 
 int main() {
+    // only set the exitCode to 0, if the captcha succeeds
+    int exitCode = 1;
+
     // initialze Meta object, which serves as central data hub
     Meta meta;
 
@@ -30,6 +33,7 @@ int main() {
         if (winConditionThread.hasSucceededCaptcha()) {
             meta.stopExecution();
             printResultMessage("!! You seem to be a human, congratulations :D !!", "Would you be so kindly, and press any key to exit?");
+            exitCode = 0;
         } else if (winConditionThread.hasFailedCaptcha()) {
             meta.stopExecution();
             printResultMessage("!! Go away, stinky AI :[ !!", "I guess you will bruteforce yourself out anyway ...");
@@ -56,5 +60,5 @@ int main() {
     // clear and reset console for shutdown
     resetConsole();
 
-    return 0;
+    return exitCode;
 }
